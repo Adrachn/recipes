@@ -1,26 +1,39 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
+@theme {
+  /* Metallic Colors */
+  --color-bronze-light: #d8aa71;
+  --color-bronze: #a97e41;
+  --color-bronze-dark: #805c2c;
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
+  --color-silver-light: #e2e8f0;
+  --color-silver: #a1a1aa;
+  --color-silver-dark: #7f7f8a;
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  --color-gold-light: #fef08a;
+  --color-gold: #eab308;
+  --color-gold-dark: #ca8a04;
+
+  /* Raw Brand Colors from Image */
+  --color-brand-pink: #f472b6;
+  --color-brand-purple: #a78bfa;
+  --color-brand-teal: #2dd4bf;
+  --color-brand-blue: #60a5fa;
+  --color-brand-green: #4ade80;
+  --color-brand-yellow: #fde047;
+
+  /* Semantic Theme Colors */
+  --color-primary: var(--color-brand-pink);
+  --color-secondary: var(--color-brand-purple);
+  --color-accent: var(--color-brand-teal);
+
+  --color-base-100: #18181b; /* For main content backgrounds */
+  --color-base-200: #27272a; /* For slightly lighter elements like cards */
+  --color-base-content: #f4f4f5; /* For primary text */
+  --color-base-content-secondary: #a1a1aa; /* For secondary/muted text */
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  @apply bg-gradient-to-br from-brand-purple via-brand-pink to-brand-blue text-base-content;
+  min-height: 100vh;
 }
