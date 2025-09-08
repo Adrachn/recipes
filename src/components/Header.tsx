@@ -14,14 +14,14 @@ const Header = () => {
       <nav className="container mx-auto flex items-center justify-end space-x-4">
         <Link href="/" title="My Decks">
           <CardBoxIcon
-            className={`w-8 h-8 transition-colors ${
+            className={`w-10 h-10 transition-colors ${
               isActive("/") ? "text-primary" : "text-content-on-light"
             } hover:text-primary`}
           />
         </Link>
         <Link href="/recipes" title="All Cards">
           <CardStackIcon
-            className={`w-8 h-8 transition-colors ${
+            className={`w-12 h-12 transition-colors ${
               isActive("/recipes") ? "text-primary" : "text-content-on-light"
             } hover:text-primary`}
           />

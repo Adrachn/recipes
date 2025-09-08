@@ -36,7 +36,7 @@ const RecipeCard: React.FC<RecipeCardProps> = ({ recipe }) => {
         }`}
       >
         <div
-          className={`rounded-md p-2.5 h-full text-content-on-light flex flex-col ${getCardCategoryStyle(
+          className={`rounded-md p-2.5 h-full text-content-on-dark flex flex-col ${getCardCategoryStyle(
             recipe.tags
           )}`}
         >
@@ -50,7 +50,7 @@ const RecipeCard: React.FC<RecipeCardProps> = ({ recipe }) => {
           </div>
           <div className="p-4 flex-grow">
             <h3 className="text-xl font-bold mb-2">{recipe.title}</h3>
-            <p className="text-content-on-light-secondary text-sm">
+            <p className="text-content-on-dark-secondary text-sm">
               {recipe.summary}
             </p>
           </div>
