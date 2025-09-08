@@ -27,13 +27,38 @@
   --color-secondary: var(--color-brand-purple);
   --color-accent: var(--color-brand-teal);
 
-  --color-base-100: #18181b; /* For main content backgrounds */
-  --color-base-200: #27272a; /* For slightly lighter elements like cards */
-  --color-base-content: #f4f4f5; /* For primary text */
-  --color-base-content-secondary: #a1a1aa; /* For secondary/muted text */
+  --color-content-on-light: #1e2937; /* Dark text for light backgrounds */
+  --color-content-on-light-secondary: #475569; /* Lighter dark text */
+
+  --color-content-on-dark: #f4f4f5; /* Light text for dark backgrounds */
+  --color-content-on-dark-secondary: #a1a1aa; /* Darker light text */
+
+  --color-base-100: #18181b; /* A dark base background */
+  --color-base-200: #27272a; /* For elements on top of base-100, like cards */
+
+  /* Card Category Gradients */
+  --color-card-vegan-start: #4ade80;
+  --color-card-vegan-end: #16a34a;
+  --color-card-vegetarian-start: #2dd4bf;
+  --color-card-vegetarian-end: #0d9488;
+  --color-card-chicken-start: #fb923c;
+  --color-card-chicken-end: #f97316;
+  --color-card-fish-start: #60a5fa;
+  --color-card-fish-end: #2563eb;
+  --color-card-meat-start: #f472b6;
+  --color-card-meat-end: #db2777;
+
+  /* New neutral background */
+  --color-background-neutral: #f3f4f6;
+
+  /* Component Dimensions */
+  --card-width: 300px;
+  --card-height: 420px;
+  --modal-card-width: min(90vw, 600px);
+  --modal-card-height: min(90vh, 840px);
 }
 
 body {
-  @apply bg-gradient-to-br from-brand-purple via-brand-pink to-brand-blue text-base-content;
+  @apply bg-[var(--color-background-neutral)] text-content-on-light;
   min-height: 100vh;
 }
