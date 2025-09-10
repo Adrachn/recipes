@@ -45,6 +45,114 @@
         "Top with cheese, then the other slice of bread, butter-side up.",
         "Grill for 3-4 minutes per side, until golden brown and the cheese is melted."
       ]
+    },
+    {
+      "title": "Quick Chicken Quesadilla",
+      "slug": "quick-chicken-quesadilla",
+      "image": "/images/placeholder.jpg",
+      "summary": "Fast, easy, and cheesy.",
+      "prepTime": "5 min",
+      "cookTime": "10 min",
+      "servings": 1,
+      "difficulty": "Easy",
+      "tags": ["lunch", "chicken", "simple", "gluten-free"],
+      "ingredients": [
+        { "amount": "1", "name": "Flour Tortilla" },
+        { "amount": "1/2 cup", "name": "Cooked Chicken, shredded" },
+        { "amount": "1/2 cup", "name": "Shredded Cheese" }
+      ],
+      "instructions": [
+        "Place tortilla in a skillet over medium heat.",
+        "Sprinkle chicken and cheese over one half of the tortilla.",
+        "Fold the other half over and cook for 2-3 minutes per side, until golden and cheese is melted."
+      ]
+    },
+    {
+      "title": "One-Pan Lemon Herb Salmon",
+      "slug": "one-pan-lemon-herb-salmon",
+      "image": "/images/placeholder.jpg",
+      "summary": "A healthy and flavorful salmon dish with minimal cleanup.",
+      "prepTime": "5 min",
+      "cookTime": "15 min",
+      "servings": 2,
+      "difficulty": "Easy",
+      "tags": ["dinner", "fish", "healthy", "gluten-free", "lactose-free"],
+      "ingredients": [
+        { "amount": "2", "name": "Salmon Fillets" },
+        { "amount": "1", "name": "Lemon" },
+        { "amount": "1 tbsp", "name": "Olive Oil" },
+        { "amount": "1 tsp", "name": "Dried Herbs (e.g., dill or parsley)" }
+      ],
+      "instructions": [
+        "Preheat oven to 400°F (200°C).",
+        "Place salmon on a baking sheet. Drizzle with olive oil, herbs, and lemon juice.",
+        "Bake for 12-15 minutes, or until the salmon is cooked through."
+      ]
+    },
+    {
+      "title": "Simple Tomato Soup",
+      "slug": "simple-tomato-soup",
+      "image": "/images/placeholder.jpg",
+      "summary": "Classic, creamy tomato soup from canned tomatoes.",
+      "prepTime": "5 min",
+      "cookTime": "20 min",
+      "servings": 4,
+      "difficulty": "Easy",
+      "tags": ["soup", "vegetarian", "simple", "gluten-free"],
+      "ingredients": [
+        { "amount": "1 (28 oz) can", "name": "Crushed Tomatoes" },
+        { "amount": "1 cup", "name": "Vegetable Broth" },
+        { "amount": "1/2 cup", "name": "Heavy Cream" }
+      ],
+      "instructions": [
+        "Combine crushed tomatoes and vegetable broth in a pot.",
+        "Bring to a simmer over medium heat and cook for 15 minutes.",
+        "Stir in heavy cream and season with salt and pepper to taste."
+      ]
+    },
+    {
+      "title": "Basic Pasta with Garlic and Oil",
+      "slug": "basic-pasta-aglio-e-olio",
+      "image": "/images/placeholder.jpg",
+      "summary": "A simple yet delicious Italian pasta dish.",
+      "prepTime": "5 min",
+      "cookTime": "15 min",
+      "servings": 2,
+      "difficulty": "Easy",
+      "tags": ["dinner", "pasta", "vegan", "simple", "lactose-free"],
+      "ingredients": [
+        { "amount": "200g", "name": "Spaghetti" },
+        { "amount": "4 cloves", "name": "Garlic, thinly sliced" },
+        { "amount": "1/4 cup", "name": "Olive Oil" },
+        { "amount": "Pinch", "name": "Red Pepper Flakes" }
+      ],
+      "instructions": [
+        "Cook spaghetti according to package directions.",
+        "Meanwhile, heat olive oil in a skillet over medium-low heat. Add garlic and red pepper flakes and cook until garlic is golden.",
+        "Drain pasta, reserving some pasta water. Toss pasta with the garlic oil, adding a splash of pasta water to create a sauce."
+      ]
+    },
+    {
+      "title": "Pan-Seared Steak",
+      "slug": "pan-seared-steak",
+      "image": "/images/placeholder.jpg",
+      "summary": "A perfectly cooked steak with a beautiful crust.",
+      "prepTime": "5 min",
+      "cookTime": "10 min",
+      "servings": 1,
+      "difficulty": "Medium",
+      "tags": ["dinner", "red-meat", "beef", "gluten-free", "lactose-free"],
+      "ingredients": [
+        { "amount": "1", "name": "Steak (e.g., Ribeye or Sirloin)" },
+        { "amount": "1 tbsp", "name": "Butter" },
+        { "amount": "1 clove", "name": "Garlic" }
+      ],
+      "instructions": [
+        "Pat steak dry and season generously with salt and pepper.",
+        "Heat a skillet over high heat until very hot. Add the steak and sear for 3-5 minutes per side for medium-rare.",
+        "In the last minute of cooking, add butter and garlic to the pan and baste the steak.",
+        "Let the steak rest for 5 minutes before slicing."
+      ]
     }
   ]
 }
