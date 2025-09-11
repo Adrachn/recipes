@@ -18,7 +18,7 @@ const RecipePage = async ({ params }: RecipePageProps) => {
   }
 
   return (
-    <div className="h-full text-content-on-light">
+    <div className="h-full bg-[#FDFBF4] text-slate-800 p-8 overflow-y-auto">
       <h1 className="text-3xl font-bold mb-4">{recipe.title}</h1>
       <div className="mb-6">
         <h2 className="text-2xl font-semibold mb-2">Ingredients</h2>

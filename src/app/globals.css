@@ -27,35 +27,68 @@
   --color-secondary: var(--color-brand-purple);
   --color-accent: var(--color-brand-teal);
 
-  --color-content-on-light: #1e2937; /* Dark text for light backgrounds */
+  --color-content-on-light: #1f2937; /* Dark text for light backgrounds */
   --color-content-on-light-secondary: #475569; /* Lighter dark text */
 
-  --color-content-on-dark: #f4f4f5; /* Light text for dark backgrounds */
-  --color-content-on-dark-secondary: #a1a1aa; /* Darker light text */
+  --color-content-on-dark: #f9fafb; /* Light text for dark backgrounds */
+  --color-content-on-dark-secondary: #d1d5db; /* Darker light text */
 
-  --color-base-100: #18181b; /* A dark base background */
-  --color-base-200: #27272a; /* For elements on top of base-100, like cards */
+  --color-base-100: #ffffff; /* A dark base background */
+  --color-base-200: #f3f4f6; /* For elements on top of base-100, like cards */
 
-  /* Card Category Gradients */
-  --color-card-vegan-start: #4ade80;
-  --color-card-vegan-end: #16a34a;
-  --color-card-vegetarian-start: #2dd4bf;
-  --color-card-vegetarian-end: #0d9488;
-  --color-card-chicken-start: #fb923c;
-  --color-card-chicken-end: #f97316;
-  --color-card-fish-start: #60a5fa;
-  --color-card-fish-end: #2563eb;
-  --color-card-meat-start: #f472b6;
-  --color-card-meat-end: #db2777;
-
-  /* New neutral background */
-  --color-background-neutral: #f3f4f6;
-
-  /* Component Dimensions */
+  /* Card Variables */
   --card-width: 300px;
   --card-height: 420px;
   --modal-card-width: min(90vw, 600px);
   --modal-card-height: min(90vh, 840px);
+}
+
+@layer utilities {
+  .bg-vegan-gradient {
+    background-image: linear-gradient(
+      to bottom right,
+      #15803d 10%,
+      #16a34a 40%,
+      #4ade80 80%,
+      #bbf7d0
+    );
+  }
+  .bg-vegetarian-gradient {
+    background-image: linear-gradient(
+      to bottom right,
+      #0d9488 10%,
+      #14b8a6 40%,
+      #5eead4 80%,
+      #ccfbf1
+    );
+  }
+  .bg-chicken-gradient {
+    background-image: linear-gradient(
+      to bottom right,
+      #ca8a04 10%,
+      #eab308 40%,
+      #fde047 80%,
+      #fef9c3
+    );
+  }
+  .bg-fish-gradient {
+    background-image: linear-gradient(
+      to bottom right,
+      #2563eb 10%,
+      #3b82f6 40%,
+      #93c5fd 80%,
+      #dbeafe
+    );
+  }
+  .bg-red-meat-gradient {
+    background-image: linear-gradient(
+      to bottom right,
+      #9333ea 10%,
+      #a855f7 40%,
+      #d8b4fe 80%,
+      #f3e8ff
+    );
+  }
 }
 
 body {

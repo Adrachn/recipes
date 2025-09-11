@@ -465,30 +465,53 @@ const MealPlannerForm: React.FC<MealPlannerFormProps> = ({ packs }) => {
             </h2>
             <div className="flex flex-wrap gap-8 justify-center">
               {plan.map((recipe) => {
+                const getCountsInCategoryInPlan = (recipeSlug: string) => {
+                  const targetRecipe = plan.find((r) => r.slug === recipeSlug);
+                  if (!targetRecipe) return 0;
+                  const targetCategory = targetRecipe.tags.find((t) =>
+                    mealCategories.includes(t)
+                  );
+                  if (!targetCategory) return plan.length; // Fallback for uncategorized
+
+                  return plan.filter((r) => r.tags.includes(targetCategory))
+                    .length;
+                };
+
+                const countsInCategoryInPlan = getCountsInCategoryInPlan(
+                  recipe.slug
+                );
                 const canReroll =
-                  availableCounts &&
-                  plan &&
-                  availableCounts.totalAvailable > plan.length;
+                  (availableCounts?.categories[
+                    recipe.tags.find((t) =>
+                      mealCategories.includes(t)
+                    ) as string
+                  ] ?? 0) > countsInCategoryInPlan;
 
                 return (
-                  <div key={recipe.slug} className="flex flex-col items-center">
-                    <div className="w-[var(--card-width)] h-[var(--card-height)]">
+                  <div
+                    key={recipe.slug}
+                    className="flex flex-col items-center gap-2"
+                  >
+                    <div
+                      style={{
+                        width: "var(--card-width)",
+                        height: "var(--card-height)",
+                      }}
+                    >
                       <RecipeCard recipe={recipe} />
                     </div>
-                    {canReroll && (
-                      <button
-                        onClick={() => handleReroll(recipe)}
-                        disabled={!!isRerolling}
-                        className="mt-2 flex items-center justify-center gap-2 bg-slate-200 text-slate-700 hover:bg-slate-300 font-semibold py-2 px-4 rounded-md transition-colors disabled:opacity-50"
-                      >
-                        <RefreshCw
-                          className={`w-4 h-4 ${
-                            isRerolling === recipe.slug ? "animate-spin" : ""
-                          }`}
-                        />
-                        Reroll
-                      </button>
-                    )}
+                    <button
+                      onClick={() => handleReroll(recipe)}
+                      disabled={isRerolling === recipe.slug || !canReroll}
+                      className="flex items-center justify-center gap-2 px-4 py-2 bg-slate-200 hover:bg-slate-300 disabled:bg-slate-100 disabled:cursor-not-allowed text-slate-700 disabled:text-slate-400 rounded-md font-semibold transition-colors text-sm"
+                    >
+                      <RefreshCw
+                        className={`w-4 h-4 ${
+                          isRerolling === recipe.slug ? "animate-spin" : ""
+                        }`}
+                      />
+                      Reroll
+                    </button>
                   </div>
                 );
               })}

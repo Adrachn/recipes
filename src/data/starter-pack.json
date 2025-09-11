@@ -153,6 +153,115 @@
         "In the last minute of cooking, add butter and garlic to the pan and baste the steak.",
         "Let the steak rest for 5 minutes before slicing."
       ]
+    },
+    {
+      "title": "Vegan Lentil Soup",
+      "slug": "vegan-lentil-soup",
+      "image": "/images/placeholder.jpg",
+      "summary": "A hearty and nutritious soup that's easy to make.",
+      "prepTime": "10 min",
+      "cookTime": "30 min",
+      "servings": 4,
+      "difficulty": "Easy",
+      "tags": ["soup", "vegan", "healthy", "gluten-free", "lactose-free"],
+      "ingredients": [
+        { "amount": "1 tbsp", "name": "Olive Oil" },
+        { "amount": "1", "name": "Onion, chopped" },
+        { "amount": "2", "name": "Carrots, chopped" },
+        { "amount": "1 cup", "name": "Red Lentils, rinsed" },
+        { "amount": "4 cups", "name": "Vegetable Broth" }
+      ],
+      "instructions": [
+        "Heat olive oil in a large pot over medium heat. Sauté onion and carrots until softened.",
+        "Add lentils and vegetable broth. Bring to a boil, then reduce heat and simmer for 20-25 minutes until lentils are tender.",
+        "Season with salt and pepper to taste."
+      ]
+    },
+    {
+      "title": "Chickpea Salad Sandwich",
+      "slug": "chickpea-salad-sandwich",
+      "image": "/images/placeholder.jpg",
+      "summary": "A vegan twist on a classic tuna or chicken salad sandwich.",
+      "prepTime": "10 min",
+      "cookTime": "0 min",
+      "servings": 2,
+      "difficulty": "Easy",
+      "tags": ["lunch", "sandwich", "vegan", "simple", "lactose-free"],
+      "ingredients": [
+        { "amount": "1 (15 oz) can", "name": "Chickpeas, rinsed and drained" },
+        { "amount": "1/4 cup", "name": "Vegan Mayonnaise" },
+        { "amount": "1", "name": "Celery Stalk, finely chopped" },
+        { "amount": "4 slices", "name": "Bread" }
+      ],
+      "instructions": [
+        "In a bowl, mash the chickpeas with a fork to your desired consistency.",
+        "Stir in the vegan mayonnaise and celery. Season with salt and pepper.",
+        "Serve between two slices of bread."
+      ]
+    },
+    {
+      "title": "Black Bean Burgers",
+      "slug": "black-bean-burgers",
+      "image": "/images/placeholder.jpg",
+      "summary": "Flavorful and satisfying homemade vegan burgers.",
+      "prepTime": "15 min",
+      "cookTime": "10 min",
+      "servings": 4,
+      "difficulty": "Medium",
+      "tags": ["dinner", "burger", "vegan", "lactose-free"],
+      "ingredients": [
+        { "amount": "1 (15 oz) can", "name": "Black Beans, rinsed and drained" },
+        { "amount": "1/2 cup", "name": "Breadcrumbs" },
+        { "amount": "1/4 cup", "name": "Chopped Onion" },
+        { "amount": "1 tsp", "name": "Cumin" }
+      ],
+      "instructions": [
+        "Mash black beans in a bowl. Mix in breadcrumbs, onion, and cumin.",
+        "Form the mixture into 4 patties.",
+        "Pan-fry in a lightly oiled skillet over medium heat for about 5 minutes per side, until browned and firm."
+      ]
+    },
+    {
+      "title": "Roasted Vegetable Quinoa Bowl",
+      "slug": "roasted-vegetable-quinoa-bowl",
+      "image": "/images/placeholder.jpg",
+      "summary": "A versatile and healthy meal packed with nutrients.",
+      "prepTime": "10 min",
+      "cookTime": "25 min",
+      "servings": 2,
+      "difficulty": "Easy",
+      "tags": ["dinner", "bowl", "vegan", "healthy", "gluten-free", "lactose-free"],
+      "ingredients": [
+        { "amount": "1 cup", "name": "Quinoa, cooked" },
+        { "amount": "2 cups", "name": "Mixed Vegetables, chopped (e.g., broccoli, bell peppers)" },
+        { "amount": "1 tbsp", "name": "Olive Oil" }
+      ],
+      "instructions": [
+        "Preheat oven to 400°F (200°C).",
+        "Toss vegetables with olive oil on a baking sheet and roast for 20-25 minutes until tender.",
+        "Serve the roasted vegetables over a bed of quinoa."
+      ]
+    },
+    {
+      "title": "Tofu Scramble",
+      "slug": "tofu-scramble",
+      "image": "/images/placeholder.jpg",
+      "summary": "A delicious and protein-rich vegan alternative to scrambled eggs.",
+      "prepTime": "5 min",
+      "cookTime": "10 min",
+      "servings": 2,
+      "difficulty": "Easy",
+      "tags": ["breakfast", "vegan", "healthy", "gluten-free", "lactose-free"],
+      "ingredients": [
+        { "amount": "1 block", "name": "Firm Tofu, pressed and crumbled" },
+        { "amount": "1 tbsp", "name": "Nutritional Yeast" },
+        { "amount": "1/2 tsp", "name": "Turmeric (for color)" }
+      ],
+      "instructions": [
+        "Heat a skillet over medium heat. Add the crumbled tofu and cook for a few minutes.",
+        "Stir in the nutritional yeast and turmeric. Cook until heated through.",
+        "Season with salt and pepper to taste."
+      ]
     }
   ]
 }
