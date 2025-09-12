@@ -9,8 +9,13 @@ import {
   rerollRecipeAction,
 } from "../app/meal-planner/actions";
 import { PlannerCriteria } from "@/lib/planner";
-import { ChevronDown, RefreshCw, Ban } from "lucide-react";
+import { ChevronDown, RefreshCw, Ban, CalendarCheck } from "lucide-react";
 import CategoryCounter from "./CategoryCounter";
+import { useRouter } from "next/navigation";
+
+type MealPlanData = {
+  [date: string]: Recipe | null; // Key is YYYY-MM-DD
+};
 
 type AvailableCounts = {
   categories: Record<string, number>;
@@ -44,6 +49,7 @@ const MealPlannerForm: React.FC<MealPlannerFormProps> = ({ packs }) => {
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [isRerolling, setIsRerolling] = useState<string | null>(null);
+  const router = useRouter();
   const [lastCriteria, setLastCriteria] = useState<PlannerCriteria | null>(
     null
   );
@@ -247,6 +253,39 @@ const MealPlannerForm: React.FC<MealPlannerFormProps> = ({ packs }) => {
     }
 
     setIsRerolling(null);
+  };
+
+  const handleAddToCalendar = () => {
+    if (!plan) return;
+
+    // Fetch existing plan or create a new one
+    const savedPlanJson = localStorage.getItem("monthlyMealPlan");
+    const existingPlan: MealPlanData = savedPlanJson
+      ? JSON.parse(savedPlanJson)
+      : {};
+
+    // Find the first empty day to start adding recipes
+    let startDate = new Date();
+    const existingDates = Object.keys(existingPlan)
+      .sort()
+      .filter((date) => existingPlan[date] !== null);
+    if (existingDates.length > 0) {
+      const lastDate = new Date(existingDates[existingDates.length - 1]);
+      startDate = new Date(lastDate);
+      startDate.setDate(startDate.getDate() + 1);
+    }
+
+    // Add the new recipes to the plan
+    const newPlan = { ...existingPlan };
+    plan.forEach((recipe, index) => {
+      const date = new Date(startDate);
+      date.setDate(startDate.getDate() + index);
+      const dateKey = date.toISOString().split("T")[0]; // YYYY-MM-DD
+      newPlan[dateKey] = recipe;
+    });
+
+    localStorage.setItem("monthlyMealPlan", JSON.stringify(newPlan));
+    router.push("/meal-plan/view");
   };
 
   const countsInCategoryInPlan = plan
@@ -515,6 +554,15 @@ const MealPlannerForm: React.FC<MealPlannerFormProps> = ({ packs }) => {
                   </div>
                 );
               })}
+            </div>
+            <div className="text-center mt-12">
+              <button
+                onClick={handleAddToCalendar}
+                className="bg-accent text-white font-bold py-3 px-8 rounded-lg hover:bg-opacity-90 transition-all shadow-md hover:shadow-lg flex items-center gap-2 mx-auto"
+              >
+                <CalendarCheck className="w-5 h-5" />
+                Add to Calendar
+              </button>
             </div>
           </section>
         )}

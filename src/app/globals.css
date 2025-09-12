@@ -41,6 +41,10 @@
   --card-height: 420px;
   --modal-card-width: min(90vw, 600px);
   --modal-card-height: min(90vh, 840px);
+
+  /* New variables for the calendar view */
+  --calendar-card-width: 150px;
+  --calendar-card-height: 210px;
 }
 
 @layer utilities {

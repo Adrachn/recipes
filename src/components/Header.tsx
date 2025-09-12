@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Archive, Layers, CalendarPlus } from "lucide-react";
+import { Archive, Layers, CalendarPlus, CalendarDays } from "lucide-react";
 
 const Header = () => {
   const pathname = usePathname();
@@ -12,6 +12,15 @@ const Header = () => {
   return (
     <header className="fixed top-0 left-0 w-full p-4 z-10">
       <nav className="container mx-auto flex items-center justify-end space-x-4">
+        <Link href="/meal-plan/view" title="View Meal Plan">
+          <CalendarDays
+            className={`w-10 h-10 transition-colors ${
+              isActive("/meal-plan/view")
+                ? "text-primary"
+                : "text-content-on-light"
+            } hover:text-primary`}
+          />
+        </Link>
         <Link href="/meal-planner" title="Meal Planner">
           <CalendarPlus
             className={`w-10 h-10 transition-colors ${
