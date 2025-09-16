@@ -7,18 +7,12 @@ export default async function Home() {
   return (
     <main className="container mx-auto p-8 space-y-16">
       {recipePacks.map((pack) => (
-        <div key={pack.slug}>
-          <header className="text-center mb-12">
-            <h1 className="text-4xl font-bold mb-2">{pack.name}</h1>
-            <p className="text-lg text-content-on-light-secondary">
-              {pack.description}
-            </p>
-          </header>
-
+        <div key={pack._id} className="mb-12">
+          <h2 className="text-3xl font-bold mb-6 text-center">{pack.name}</h2>
           <section className="flex flex-wrap gap-8 justify-center">
             {pack.recipes.map((recipe) => (
               <div
-                key={recipe.slug}
+                key={recipe._id}
                 style={{
                   width: "var(--card-width)",
                   height: "var(--card-height)",

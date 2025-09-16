@@ -2,11 +2,11 @@ import RecipeCard from "@/components/RecipeCard";
 import { getRecipePackBySlug } from "@/lib/recipes";
 import { notFound } from "next/navigation";
 
-interface DeckPageProps {
+type DeckPageProps = {
   params: {
     slug: string;
   };
-}
+};
 
 export default async function DeckPage({ params }: DeckPageProps) {
   const { slug } = params;
@@ -28,7 +28,7 @@ export default async function DeckPage({ params }: DeckPageProps) {
       <section className="flex flex-wrap gap-8 justify-center">
         {pack.recipes.map((recipe) => (
           <div
-            key={recipe.slug}
+            key={recipe._id}
             style={{
               width: "var(--card-width)",
               height: "var(--card-height)",

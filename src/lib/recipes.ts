@@ -1,52 +1,69 @@
-import fs from "fs/promises";
-import path from "path";
-import { RecipePack } from "@/types";
+import { groq } from 'next-sanity';
+import { client } from '@/sanity/lib/client';
+import { Recipe, RecipePack } from '@/types';
 
-const dataDir = path.join(process.cwd(), "src", "data");
+// Helper function to get all recipe data, expanding the references in packs
+const getAllRecipesQuery = groq`*[_type == "recipe"]{
+  _id,
+  name,
+  slug,
+  image,
+  summary,
+  difficulty,
+  prepTime,
+  cookTime,
+  tags,
+  ingredients,
+  instructions
+}`;
 
-/**
- * Reads all JSON files from the data directory and returns them as an array of RecipePacks.
- */
-export async function getAllRecipePacks(): Promise<RecipePack[]> {
-  const filenames = await fs.readdir(dataDir);
-  const jsonFiles = filenames.filter((f) => f.endsWith(".json"));
-
-  const packs = await Promise.all(
-    jsonFiles.map(async (filename) => {
-      const filePath = path.join(dataDir, filename);
-      const jsonData = await fs.readFile(filePath, "utf-8");
-      return JSON.parse(jsonData) as RecipePack;
-    })
-  );
-  return packs;
+export async function getAllRecipes(): Promise<Recipe[]> {
+  return client.fetch(getAllRecipesQuery);
 }
 
-/**
- * Finds and returns a single recipe pack by its slug.
- * @param slug - The slug of the recipe pack to find.
- */
+// Helper function to get a single recipe by its slug
+export async function getRecipeBySlug(slug: string): Promise<Recipe | null> {
+  const query = groq`*[_type == "recipe" && slug.current == $slug][0]{
+    ...,
+  }`;
+  return client.fetch(query, { slug });
+}
+
+// Function to get all recipe packs, and for each pack, fetch the full recipe objects
+const getAllRecipePacksQuery = groq`*[_type == "recipePack"]{
+  _id,
+  name,
+  slug,
+  description,
+  tags,
+  "recipes": recipes[]->{
+    _id,
+    name,
+    slug,
+    image,
+    summary,
+    difficulty,
+    prepTime,
+    cookTime,
+    tags,
+    ingredients,
+    instructions
+  }
+}`;
+
+export async function getAllRecipePacks(): Promise<RecipePack[]> {
+  return client.fetch(getAllRecipePacksQuery);
+}
+
+// Function to get a single recipe pack by its slug
 export async function getRecipePackBySlug(
   slug: string
-): Promise<RecipePack | undefined> {
-  const packs = await getAllRecipePacks();
-  return packs.find((pack) => pack.slug === slug);
-}
-
-/**
- * Gets all recipes from all packs and flattens them into a single array.
- */
-export async function getAllRecipes() {
-  const packs = await getAllRecipePacks();
-  return packs.flatMap((pack) =>
-    pack.recipes.map((recipe) => ({ ...recipe, packSlug: pack.slug }))
-  );
-}
-
-/**
- * Finds and returns a single recipe by its slug.
- * @param slug - The slug of the recipe to find.
- */
-export async function getRecipeBySlug(slug: string) {
-  const allRecipes = await getAllRecipes();
-  return allRecipes.find((recipe) => recipe.slug === slug);
+): Promise<RecipePack | null> {
+  const query = groq`*[_type == "recipePack" && slug.current == $slug][0]{
+    ...,
+    "recipes": recipes[]->{
+      ...
+    }
+  }`;
+  return client.fetch(query, { slug });
 }

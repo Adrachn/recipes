@@ -1,4 +1,4 @@
-import RecipePackCard from "@/components/RecipePackCard";
+import { RecipePack } from "@/components/RecipePack";
 import { getAllRecipePacks } from "@/lib/recipes";
 
 export default async function Home() {
@@ -16,7 +16,7 @@ export default async function Home() {
       </header>
       <section className="flex flex-wrap gap-8 ">
         {recipePacks.map((pack) => (
-          <RecipePackCard key={pack.slug} pack={pack} />
+          <RecipePack key={pack._id} pack={pack} />
         ))}
       </section>
     </main>

@@ -2,15 +2,15 @@
 
 @theme {
   /* Metallic Colors */
-  --color-bronze-light: #d8aa71;
+  --color-bronze-light: #fdeccf;
   --color-bronze: #a97e41;
   --color-bronze-dark: #805c2c;
 
-  --color-silver-light: #e2e8f0;
+  --color-silver-light: #f8fafc;
   --color-silver: #a1a1aa;
   --color-silver-dark: #7f7f8a;
 
-  --color-gold-light: #fef08a;
+  --color-gold-light: #fffbeb;
   --color-gold: #eab308;
   --color-gold-dark: #ca8a04;
 
@@ -37,8 +37,8 @@
   --color-base-200: #f3f4f6; /* For elements on top of base-100, like cards */
 
   /* Card Variables */
-  --card-width: 300px;
-  --card-height: 420px;
+  --card-width: 350px;
+  --card-height: 480px;
   --modal-card-width: min(90vw, 600px);
   --modal-card-height: min(90vh, 840px);
 
@@ -48,6 +48,16 @@
 }
 
 @layer utilities {
+  .border-bronze {
+    border-color: var(--color-bronze);
+  }
+  .border-silver {
+    border-color: var(--color-silver);
+  }
+  .border-gold {
+    border-color: var(--color-gold);
+  }
+
   .bg-vegan-gradient {
     background-image: linear-gradient(
       to bottom right,

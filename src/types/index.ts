@@ -1,25 +1,36 @@
 export interface Ingredient {
-  amount: string;
+  _key: string;
   name: string;
+  quantity: string;
 }
 
 export interface Recipe {
-  title: string;
-  slug: string;
-  image: string;
+  _id: string;
+  name: string;
+  slug: {
+    current: string;
+  };
+  image: {
+    asset: {
+      _ref: string;
+    };
+  };
   summary: string;
-  prepTime: string;
-  cookTime: string;
-  servings: number;
-  difficulty: 'Easy' | 'Medium' | 'Hard';
+  difficulty: 'bronze' | 'silver' | 'gold';
+  prepTime?: number;
+  cookTime?: number;
   tags: string[];
   ingredients: Ingredient[];
-  instructions: string[];
+  instructions: any[]; // Sanity's portable text
 }
 
 export interface RecipePack {
+  _id: string;
   name: string;
-  slug: string;
-  description: string;
+  slug: {
+    current: string;
+  };
+  description?: string;
+  tags?: string[];
   recipes: Recipe[];
 }
