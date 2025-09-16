@@ -61,6 +61,11 @@ export const recipe = defineType({
       type: 'number',
     }),
     defineField({
+      name: 'servings',
+      title: 'Servings',
+      type: 'number',
+    }),
+    defineField({
       name: 'tags',
       title: 'Tags',
       type: 'array',
