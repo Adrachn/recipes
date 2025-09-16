@@ -28,7 +28,6 @@ export const recipe = defineType({
       options: {
         hotspot: true, // Allows for better image cropping
       },
-      validation: (Rule) => Rule.required(),
     }),
     defineField({
       name: 'summary',
