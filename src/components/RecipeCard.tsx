@@ -9,12 +9,12 @@ interface RecipeCardProps {
   recipe: Recipe;
 }
 
-const getCardCategoryStyle = (tags: string[]) => {
-  if (tags.includes("vegan")) return "bg-vegan-gradient";
-  if (tags.includes("vegetarian")) return "bg-vegetarian-gradient";
-  if (tags.includes("chicken")) return "bg-chicken-gradient";
-  if (tags.includes("fish")) return "bg-fish-gradient";
-  if (tags.includes("red-meat")) return "bg-red-meat-gradient";
+const getCardCategoryStyle = (categories: string[]) => {
+  if (categories.includes("vegan")) return "bg-vegan-gradient";
+  if (categories.includes("vegetarian")) return "bg-vegetarian-gradient";
+  if (categories.includes("chicken")) return "bg-chicken-gradient";
+  if (categories.includes("fish")) return "bg-fish-gradient";
+  if (categories.includes("red-meat")) return "bg-red-meat-gradient";
   return "bg-base-200";
 };
 
@@ -45,14 +45,14 @@ const RecipeCard: React.FC<RecipeCardProps> = ({ recipe }) => {
     >
       {/* Metallic Border */}
       <div
-        className={`w-full h-full rounded-xl p-4 bg-gradient-to-br shadow-xl ${getDifficultyGradient(
+        className={`w-full h-full rounded-xl p-6 bg-gradient-to-br shadow-xl ${getDifficultyGradient(
           recipe.difficulty
         )}`}
       >
         {/* Inner Card */}
         <div
           className={`w-full h-full rounded-md p-2.5 flex flex-col gap-2.5 ${getCardCategoryStyle(
-            recipe.tags
+            recipe.categories
           )}`}
         >
           {/* Image */}

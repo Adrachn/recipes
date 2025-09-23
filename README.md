@@ -20,6 +20,12 @@ You can start editing the page by modifying `app/page.tsx`. The page auto-update
 
 This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
 
+## CMS
+Using Embedded Studio setup - the Sanity CMS(the studio) lives inside the Next.js project, instead of being a separate project. Sanity configuration is in sanity.config.ts and sanity.cli.ts. The code for the studio is in src/sanity. The studio will run on a page in the Next.js app at src/app/studio. 
+
+npm run dev
+http://localhost:3000/studio
+
 ## Learn More
 
 To learn more about Next.js, take a look at the following resources:

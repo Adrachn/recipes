@@ -11,50 +11,41 @@ import {
   useSensor,
   useSensors,
   DragOverlay,
+  useDraggable,
+  useDroppable,
 } from "@dnd-kit/core";
-import {
-  SortableContext,
-  useSortable,
-  arrayMove,
-  rectSortingStrategy,
-} from "@dnd-kit/sortable";
-import { CSS } from "@dnd-kit/utilities";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { ChevronLeft, ChevronRight, Trash2 } from "lucide-react";
+import Modal from "./Modal";
 
 type MealPlanData = {
   [date: string]: Recipe | null; // Key is YYYY-MM-DD
 };
 
-const SortableDay = ({
+const DaySlot = ({
   id,
   date,
   recipe,
   isCurrentMonth,
   isToday,
+  activeId,
 }: {
   id: string;
   date: Date;
   recipe: Recipe | null;
   isCurrentMonth: boolean;
   isToday: boolean;
+  activeId: string | number | null;
 }) => {
-  const { attributes, listeners, setNodeRef, transform, transition } =
-    useSortable({ id });
-
-  const style = {
-    transform: CSS.Transform.toString(transform),
-    transition,
-  };
+  const { isOver, setNodeRef } = useDroppable({ id });
 
   return (
     <div
       ref={setNodeRef}
-      style={style}
-      {...attributes}
-      {...listeners}
-      className={`rounded-lg p-2 flex flex-col border border-slate-200 min-h-[220px] touch-none ${
+      className={`rounded-lg p-2 flex flex-col border border-slate-200 min-h-[220px] transition-colors ${
         isCurrentMonth ? "bg-slate-100" : "bg-slate-50 text-slate-400"
-      } ${isToday ? "border-primary border-2" : ""}`}
+      } ${isToday ? "border-primary border-2" : ""} ${
+        isOver ? "bg-slate-200" : ""
+      }`}
     >
       <p
         className={`font-semibold text-sm text-right ${
@@ -65,18 +56,47 @@ const SortableDay = ({
       </p>
       <div className="flex-grow flex items-center justify-center mt-1">
         {recipe ? (
-          <div
-            className="w-full h-full transition-transform duration-200 ease-in-out group-hover:scale-105"
-            style={{
-              width: "var(--calendar-card-width)",
-              height: "var(--calendar-card-height)",
-            }}
-          >
-            <CalendarRecipeCard recipe={recipe} />
-          </div>
+          <DraggableRecipeCard
+            id={id}
+            recipe={recipe}
+            isDragging={activeId === id}
+          />
         ) : (
           <div className="w-full h-full rounded-md" />
         )}
+      </div>
+    </div>
+  );
+};
+
+const DraggableRecipeCard = ({
+  id,
+  recipe,
+  isDragging,
+}: {
+  id: string;
+  recipe: Recipe;
+  isDragging: boolean;
+}) => {
+  const { attributes, listeners, setNodeRef } = useDraggable({ id });
+
+  return (
+    <div
+      ref={setNodeRef}
+      {...listeners}
+      {...attributes}
+      style={{
+        opacity: isDragging ? 0 : 1,
+      }}
+      className="w-full h-full flex items-center justify-center"
+    >
+      <div
+        style={{
+          width: "var(--calendar-card-width)",
+          height: "var(--calendar-card-height)",
+        }}
+      >
+        <CalendarRecipeCard recipe={recipe} />
       </div>
     </div>
   );
@@ -87,6 +107,7 @@ export default function MealPlanView() {
   const [isLoading, setIsLoading] = useState(true);
   const [activeId, setActiveId] = useState<string | number | null>(null);
   const [currentDate, setCurrentDate] = useState(new Date());
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   useEffect(() => {
     try {
@@ -102,6 +123,12 @@ export default function MealPlanView() {
     }
     setIsLoading(false);
   }, []);
+
+  const handleClearPlan = () => {
+    localStorage.removeItem("monthlyMealPlan");
+    setPlanData({});
+    setIsModalOpen(false);
+  };
 
   const sensors = useSensors(
     useSensor(PointerSensor, {
@@ -180,11 +207,27 @@ export default function MealPlanView() {
     );
   }
 
-  // Get all unique recipe slugs and date keys for SortableContext
-  const itemIds = monthGrid.map((day) => day.toISOString().split("T")[0]);
-  const activeRecipe = activeId
-    ? Object.values(planData || {}).find((r) => r?.slug === activeId)
-    : null;
+  const hasPlan =
+    planData && Object.values(planData).some((recipe) => recipe !== null);
+
+  if (!hasPlan) {
+    return (
+      <div className="text-center py-12 bg-slate-50 rounded-lg">
+        <h2 className="text-2xl font-bold text-slate-700 mb-2">
+          Your Meal Plan is Empty
+        </h2>
+        <p className="text-slate-500 mb-6">
+          Go to the meal planner to create a new plan.
+        </p>
+        <Link
+          href="/meal-planner"
+          className="bg-primary text-white font-bold py-3 px-6 rounded-lg hover:bg-opacity-90 transition-all shadow-md hover:shadow-lg"
+        >
+          Create a Meal Plan
+        </Link>
+      </div>
+    );
+  }
 
   return (
     <DndContext
@@ -193,6 +236,17 @@ export default function MealPlanView() {
       onDragStart={handleDragStart}
       onDragEnd={handleDragEnd}
     >
+      <Modal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        onConfirm={handleClearPlan}
+        title="Clear Meal Plan"
+      >
+        <p>
+          Are you sure you want to clear your entire meal plan? This action
+          cannot be undone.
+        </p>
+      </Modal>
       <div className="flex justify-between items-center mb-4">
         <button
           onClick={() => changeMonth(-1)}
@@ -200,12 +254,22 @@ export default function MealPlanView() {
         >
           <ChevronLeft className="w-6 h-6" />
         </button>
-        <h2 className="text-2xl font-bold">
-          {currentDate.toLocaleString("en-US", {
-            month: "long",
-            year: "numeric",
-          })}
-        </h2>
+        <div className="flex items-center gap-4">
+          <h2 className="text-2xl font-bold">
+            {currentDate.toLocaleString("en-US", {
+              month: "long",
+              year: "numeric",
+            })}
+          </h2>
+          <button
+            onClick={() => setIsModalOpen(true)}
+            className="flex items-center gap-2 px-3 py-1.5 bg-red-100 hover:bg-red-200 text-red-700 rounded-md font-semibold transition-colors text-sm"
+            title="Clear entire plan"
+          >
+            <Trash2 className="w-4 h-4" />
+            <span>Clear Plan</span>
+          </button>
+        </div>
         <button
           onClick={() => changeMonth(1)}
           className="p-2 rounded-md hover:bg-slate-200"
@@ -213,43 +277,40 @@ export default function MealPlanView() {
           <ChevronRight className="w-6 h-6" />
         </button>
       </div>
-      <SortableContext items={itemIds} strategy={rectSortingStrategy}>
-        <div className="grid grid-cols-7 gap-2">
-          {["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"].map((day) => (
-            <div key={day} className="text-center font-bold text-slate-600 p-2">
-              {day}
-            </div>
-          ))}
-          {monthGrid.map((day) => {
-            const isCurrentMonth = day.getMonth() === currentDate.getMonth();
-            const dateKey = day.toISOString().split("T")[0]; // YYYY-MM-DD
-            const recipe = planData?.[dateKey] || null;
-            const isToday = dateKey === todayKey;
+      <div className="grid grid-cols-7 gap-2">
+        {["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"].map((day) => (
+          <div key={day} className="text-center font-bold text-slate-600 p-2">
+            {day}
+          </div>
+        ))}
+        {monthGrid.map((day) => {
+          const isCurrentMonth = day.getMonth() === currentDate.getMonth();
+          const dateKey = day.toISOString().split("T")[0]; // YYYY-MM-DD
+          const recipe = planData?.[dateKey] || null;
+          const isToday = dateKey === todayKey;
 
-            return (
-              <SortableDay
-                key={dateKey}
-                id={dateKey}
-                date={day}
-                recipe={recipe}
-                isCurrentMonth={isCurrentMonth}
-                isToday={isToday}
-              />
-            );
-          })}
-        </div>
-      </SortableContext>
+          return (
+            <DaySlot
+              key={dateKey}
+              id={dateKey}
+              date={day}
+              recipe={recipe}
+              isCurrentMonth={isCurrentMonth}
+              isToday={isToday}
+              activeId={activeId}
+            />
+          );
+        })}
+      </div>
       <DragOverlay>
-        {activeRecipe ? (
+        {activeId && planData?.[activeId as string] ? (
           <div
             style={{
               width: "var(--calendar-card-width)",
               height: "var(--calendar-card-height)",
-              transform: "scale(0.85)",
-              transformOrigin: "top",
             }}
           >
-            <CalendarRecipeCard recipe={activeRecipe} />
+            <CalendarRecipeCard recipe={planData[activeId as string]!} />
           </div>
         ) : null}
       </DragOverlay>

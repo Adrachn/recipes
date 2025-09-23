@@ -12,9 +12,12 @@ const getAllRecipesQuery = groq`*[_type == "recipe"]{
   difficulty,
   prepTime,
   cookTime,
-  tags,
+  categories,
+  keywords,
+  servings,
   ingredients,
-  instructions
+  instructions,
+  "packSlug": *[_type == "recipePack" && references(^._id)][0].slug.current
 }`;
 
 export async function getAllRecipes(): Promise<Recipe[]> {
@@ -35,7 +38,6 @@ const getAllRecipePacksQuery = groq`*[_type == "recipePack"]{
   name,
   slug,
   description,
-  tags,
   "recipes": recipes[]->{
     _id,
     name,
@@ -45,7 +47,9 @@ const getAllRecipePacksQuery = groq`*[_type == "recipePack"]{
     difficulty,
     prepTime,
     cookTime,
-    tags,
+    categories,
+    keywords,
+    servings,
     ingredients,
     instructions
   }
@@ -66,4 +70,26 @@ export async function getRecipePackBySlug(
     }
   }`;
   return client.fetch(query, { slug });
+}
+
+// Function to search for recipes
+export async function searchRecipes(searchTerm: string): Promise<Recipe[]> {
+  if (!searchTerm) {
+    return [];
+  }
+
+  // The query searches name, summary, keywords, and categories.
+  // The `*` acts as a wildcard.
+  const query = groq`*[_type == "recipe" && (
+    name match $term ||
+    summary match $term ||
+    keywords[] match $term ||
+    categories[] match $term
+  )]{
+    ...,
+    "packSlug": *[_type == "recipePack" && references(^._id)][0].slug.current
+  }`;
+
+  // We pass the search term with wildcards to the query
+  return client.fetch(query, { term: `*${searchTerm}*` });
 }

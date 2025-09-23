@@ -61,19 +61,39 @@ export const recipe = defineType({
       type: 'number',
     }),
     defineField({
-      name: 'servings',
-      title: 'Servings',
-      type: 'number',
+      name: 'categories',
+      title: 'Categories',
+      description:
+        'Primary categories for meal planning and filtering (e.g., chicken, vegan). These will appear as icons.',
+      type: 'array',
+      of: [{ type: 'string' }],
+      options: {
+        list: [
+          { title: 'Vegan', value: 'vegan' },
+          { title: 'Vegetarian', value: 'vegetarian' },
+          { title: 'Chicken', value: 'chicken' },
+          { title: 'Fish', value: 'fish' },
+          { title: 'Red Meat', value: 'red-meat' },
+        ],
+        layout: 'grid',
+      },
+      validation: (Rule) => Rule.required().min(1),
     }),
     defineField({
-      name: 'tags',
-      title: 'Tags',
+      name: 'keywords',
+      title: 'Keywords',
+      description:
+        'Descriptive keywords for searching (e.g., curry, indian, soup, gluten-free).',
       type: 'array',
       of: [{ type: 'string' }],
       options: {
         layout: 'tags',
       },
-      validation: (Rule) => Rule.required(),
+    }),
+    defineField({
+      name: 'servings',
+      title: 'Servings',
+      type: 'number',
     }),
     defineField({
       name: 'ingredients',

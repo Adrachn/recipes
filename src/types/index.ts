@@ -16,10 +16,13 @@ export interface Recipe {
     };
   };
   summary: string;
-  difficulty: 'bronze' | 'silver' | 'gold';
+  difficulty: "bronze" | "silver" | "gold";
   prepTime?: number;
   cookTime?: number;
-  tags: string[];
+  categories: string[];
+  keywords?: string[];
+  servings?: number;
+  packSlug?: string;
   ingredients: Ingredient[];
   instructions: any[]; // Sanity's portable text
 }
@@ -31,6 +34,5 @@ export interface RecipePack {
     current: string;
   };
   description?: string;
-  tags?: string[];
   recipes: Recipe[];
 }

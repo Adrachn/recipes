@@ -6,24 +6,19 @@ import { useState, useEffect } from "react";
 
 const getDifficultyGradients = (recipe: Recipe) => {
   const difficultyGradients = {
-    Easy: "from-bronze-light via-bronze to-bronze-dark",
-    Medium: "from-silver-light via-silver to-silver-dark",
-    Hard: "from-gold-light via-gold to-gold-dark",
+    bronze: "from-bronze-light via-bronze to-bronze-dark",
+    silver: "from-silver-light via-silver to-silver-dark",
+    gold: "from-gold-light via-gold to-gold-dark",
   };
   return difficultyGradients[recipe.difficulty];
 };
 
-const getCardCategoryStyle = (tags: string[]) => {
-  if (tags.includes("vegan"))
-    return "bg-gradient-to-br from-[var(--color-card-vegan-start)] to-[var(--color-card-vegan-end)]";
-  if (tags.includes("vegetarian"))
-    return "bg-gradient-to-br from-[var(--color-card-vegetarian-start)] to-[var(--color-card-vegetarian-end)]";
-  if (tags.includes("chicken"))
-    return "bg-gradient-to-br from-[var(--color-card-chicken-start)] to-[var(--color-card-chicken-end)]";
-  if (tags.includes("fish"))
-    return "bg-gradient-to-br from-[var(--color-card-fish-start)] to-[var(--color-card-fish-end)]";
-  if (tags.includes("meat"))
-    return "bg-gradient-to-br from-[var(--color-card-meat-start)] to-[var(--color-card-meat-end)]";
+const getCardCategoryStyle = (categories: string[]) => {
+  if (categories.includes("vegan")) return "bg-vegan-gradient";
+  if (categories.includes("vegetarian")) return "bg-vegetarian-gradient";
+  if (categories.includes("chicken")) return "bg-chicken-gradient";
+  if (categories.includes("fish")) return "bg-fish-gradient";
+  if (categories.includes("red-meat")) return "bg-red-meat-gradient";
   return "bg-base-200";
 };
 
@@ -66,17 +61,22 @@ export default function FlippableCard({
         </div>
         {/* Back of the card */}
         <div className="absolute w-full h-full [backface-visibility:hidden] [transform:rotateY(180deg)]">
+          {/* Metallic Border */}
           <div
-            className={`rounded-lg p-2.5 bg-gradient-to-br h-full ${getDifficultyGradients(
+            className={`w-full h-full rounded-xl p-6 bg-gradient-to-br shadow-xl ${getDifficultyGradients(
               recipe
             )}`}
           >
+            {/* Inner Card with Category Gradient */}
             <div
-              className={`rounded-md p-4 h-full overflow-y-auto ${getCardCategoryStyle(
-                recipe.tags
+              className={`w-full h-full rounded-md p-2.5 flex flex-col gap-2.5 ${getCardCategoryStyle(
+                recipe.categories
               )}`}
             >
-              {back}
+              {/* Textbox */}
+              <div className="w-full h-full bg-[#FDFBF4] rounded-md overflow-y-auto">
+                {back}
+              </div>
             </div>
           </div>
         </div>

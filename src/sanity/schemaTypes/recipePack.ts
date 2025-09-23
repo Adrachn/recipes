@@ -28,17 +28,6 @@ export const recipePack = defineType({
       rows: 3,
     }),
     defineField({
-      name: 'tags',
-      title: 'Tags',
-      type: 'array',
-      of: [{ type: 'string' }],
-      options: {
-        layout: 'tags',
-      },
-      description:
-        'Tags to display on the pack card (e.g., "vegan", "chicken", "gluten-free")',
-    }),
-    defineField({
       name: 'recipes',
       title: 'Recipes',
       type: 'array',

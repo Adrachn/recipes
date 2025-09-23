@@ -2,6 +2,7 @@ import { Recipe } from "@/types";
 import Image from "next/image";
 import Link from "next/link";
 import React from "react";
+import { urlFor } from "@/sanity/lib/image";
 
 interface CalendarRecipeCardProps {
   recipe: Recipe;
@@ -18,16 +19,15 @@ const getCardCategoryStyle = (tags: string[]) => {
 
 const CalendarRecipeCard: React.FC<CalendarRecipeCardProps> = ({ recipe }) => {
   const difficultyGradients = {
-    Easy: "from-bronze-light via-bronze to-bronze-dark",
-    Medium: "from-silver-light via-silver to-silver-dark",
-    Hard: "from-gold-light via-gold to-gold-dark",
+    bronze: "from-bronze-light via-bronze to-bronze-dark",
+    silver: "from-silver-light via-silver to-silver-dark",
+    gold: "from-gold-light via-gold to-gold-dark",
   };
 
   return (
     <Link
-      href={`/recipes/${recipe.slug}`}
+      href={`/recipes/${recipe.slug.current}`}
       className="block h-full w-full"
-      onClick={(e) => e.preventDefault()} // Prevent link navigation during drag
     >
       <div
         className={`rounded-lg p-1.5 bg-gradient-to-br h-full shadow-md ${
@@ -36,13 +36,17 @@ const CalendarRecipeCard: React.FC<CalendarRecipeCardProps> = ({ recipe }) => {
       >
         <div
           className={`rounded-md p-1.5 h-full text-content-on-dark flex flex-col gap-1.5 ${getCardCategoryStyle(
-            recipe.tags
+            recipe.categories
           )}`}
         >
           <figure className="relative w-full flex-grow overflow-hidden rounded-t-md">
             <Image
-              src={recipe.image}
-              alt={recipe.title}
+              src={
+                recipe.image
+                  ? urlFor(recipe.image).width(200).height(200).url()
+                  : "/images/placeholder.png"
+              }
+              alt={recipe.name}
               fill
               className="object-cover"
               sizes="150px"
@@ -50,7 +54,7 @@ const CalendarRecipeCard: React.FC<CalendarRecipeCardProps> = ({ recipe }) => {
           </figure>
           <figcaption className="p-2 bg-[#FDFBF4] rounded-b-md">
             <h3 className="text-sm font-bold text-slate-800 truncate">
-              {recipe.title}
+              {recipe.name}
             </h3>
           </figcaption>
         </div>
