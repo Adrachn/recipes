@@ -105,6 +105,28 @@
   }
 }
 
+@media print {
+  body * {
+    visibility: hidden;
+  }
+  .printable,
+  .printable * {
+    visibility: visible;
+  }
+  .printable {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+  }
+  .no-print {
+    display: none;
+  }
+  @page {
+    margin: 2cm;
+  }
+}
+
 body {
   @apply bg-[var(--color-background-neutral)] text-content-on-light;
   min-height: 100vh;

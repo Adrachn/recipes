@@ -14,9 +14,9 @@ type RecipePackProps = {
   pack: RecipePackType;
 };
 
-// Map category strings to Lucide icons
+// Map category strings to icons
 const categoryIconMap: Record<string, React.FC<LucideProps>> = {
-  vegan: Carrot, // New icon for vegan
+  vegan: Carrot,
   vegetarian: Leaf,
   chicken: Drumstick,
   fish: Fish,
@@ -24,15 +24,14 @@ const categoryIconMap: Record<string, React.FC<LucideProps>> = {
 };
 
 const CategoryIcon = ({ category }: { category: string }) => {
-  if (!category) return null; // Prevent crash if category is null or undefined
+  if (!category) return null;
   const Icon = categoryIconMap[category.toLowerCase()];
   if (!Icon) return null;
   return <Icon className="w-5 h-5" />;
 };
 
-// The card stack should be standing up (portrait orientation)
 const CardStack = () => (
-  <div className="relative w-52 h-72">
+  <div className="relative w-40 h-52">
     {/* Base card */}
     <div className="absolute w-full h-full bg-slate-200 border-2 border-slate-300 rounded-lg shadow-md transform rotate-[6deg]" />
     {/* Middle card */}
@@ -53,32 +52,47 @@ export function RecipePack({ pack }: RecipePackProps) {
   return (
     <Link
       href={`/decks/${pack.slug.current}`}
-      className="group block w-[320px] h-[480px] transition-transform duration-300 ease-in-out hover:-translate-y-2"
+      className="group block w-[380px] h-[520px] [perspective:1000px]"
     >
-      <div className="relative w-full h-full p-5 bg-gradient-to-br from-green-600 to-green-800 text-white rounded-lg shadow-lg group-hover:shadow-2xl transition-shadow duration-300 flex flex-col justify-between">
-        <div className="text-center h-16 flex items-center justify-center">
-          <h2 className="text-3xl font-bold tracking-wider uppercase">
-            {pack.name}
-          </h2>
-        </div>
+      <div
+        className="relative w-full h-full p-21 text-white rounded-lg shadow-lg group-hover:shadow-xl transition-all duration-300 flex flex-col justify-between bg-cover bg-center group-hover:[transform:rotateY(-5deg)_rotateX(5deg)]"
+        style={{
+          backgroundImage: "url('/images/green-pack.png')",
+          transformStyle: "preserve-3d",
+        }}
+      >
+        <div
+          className="w-full h-full flex flex-col justify-center"
+          style={{
+            transformStyle: "preserve-3d",
+            transform:
+              "rotateY(20deg) rotateX(-15deg) rotateZ(-8deg) translateZ(80px)",
+          }}
+        >
+          <div className="relative text-center w-full px-3">
+            <h2 className="text-xl font-bold tracking-wider uppercase ">
+              {pack.name}
+            </h2>
+          </div>
 
-        {/* Window with new card stack */}
-        <div className="flex-grow my-4 flex items-center justify-center">
-          <CardStack />
-        </div>
+          {/* Window with new card stack */}
+          <div className="flex-grow flex items-center justify-center">
+            <CardStack />
+          </div>
 
-        <div className="text-center">
-          <p className="text-sm text-green-200 mb-3">{pack.description}</p>
-          <div className="flex items-center justify-center gap-3">
-            {packCategories.map((category) => (
-              <div
-                key={category}
-                className="bg-black/20 p-2 rounded-full border-2 border-white/50"
-                title={category}
-              >
-                <CategoryIcon category={category} />
-              </div>
-            ))}
+          <div className="relative text-center w-full  px-2">
+            <p className="text-xs text-green-100 mb-2">{pack.description}</p>
+            <div className="flex items-center justify-center gap-2 pb-3">
+              {packCategories.map((category) => (
+                <div
+                  key={category}
+                  className="bg-black/20 p-1.5 rounded-full border border-white/30"
+                  title={category}
+                >
+                  <CategoryIcon category={category} />
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       </div>

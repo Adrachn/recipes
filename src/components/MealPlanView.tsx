@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import { Recipe } from "@/types";
 import Link from "next/link";
 import CalendarRecipeCard from "./CalendarRecipeCard";
@@ -148,6 +149,7 @@ export default function MealPlanView() {
   const [dayToDelete, setDayToDelete] = useState<string | null>(null);
   const [isSelectionMode, setIsSelectionMode] = useState(false);
   const [selectedDays, setSelectedDays] = useState<string[]>([]);
+  const router = useRouter();
 
   useEffect(() => {
     try {
@@ -184,10 +186,11 @@ export default function MealPlanView() {
 
     const shoppingList = ingredients.reduce(
       (acc, ingredient) => {
-        if (!acc[ingredient.name]) {
-          acc[ingredient.name] = [];
+        const a = ingredient.name.split(",")[0].trim();
+        if (!acc[a]) {
+          acc[a] = [];
         }
-        acc[ingredient.name].push(ingredient.quantity);
+        acc[a].push(ingredient.quantity);
         return acc;
       },
       {} as Record<string, string[]>
@@ -196,9 +199,8 @@ export default function MealPlanView() {
     console.log("--- Shopping List ---");
     console.log(shoppingList);
     // Future: Show this in a modal or new page
-    alert("Shopping list generated! Check the console.");
-
-    handleToggleSelectionMode();
+    localStorage.setItem("shoppingList", JSON.stringify(shoppingList));
+    router.push("/pantry");
   };
 
   const handleClearPlan = () => {
