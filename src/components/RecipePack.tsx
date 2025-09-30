@@ -31,7 +31,7 @@ const CategoryIcon = ({ category }: { category: string }) => {
 };
 
 const CardStack = () => (
-  <div className="relative w-40 h-52">
+  <div className="relative w-44 h-58">
     {/* Base card */}
     <div className="absolute w-full h-full bg-slate-200 border-2 border-slate-300 rounded-lg shadow-md transform rotate-[6deg]" />
     {/* Middle card */}
@@ -55,7 +55,7 @@ export function RecipePack({ pack }: RecipePackProps) {
       className="group block w-[380px] h-[520px] [perspective:1000px]"
     >
       <div
-        className="relative w-full h-full p-21 text-white rounded-lg shadow-lg group-hover:shadow-xl transition-all duration-300 flex flex-col justify-between bg-cover bg-center group-hover:[transform:rotateY(-5deg)_rotateX(5deg)]"
+        className="relative w-full h-full p-16 text-white rounded-lg transition-all duration-300 flex flex-col justify-between bg-cover bg-center group-hover:-translate-y-4"
         style={{
           backgroundImage: "url('/images/green-pack.png')",
           transformStyle: "preserve-3d",
@@ -69,7 +69,7 @@ export function RecipePack({ pack }: RecipePackProps) {
               "rotateY(20deg) rotateX(-15deg) rotateZ(-8deg) translateZ(80px)",
           }}
         >
-          <div className="relative text-center w-full px-3">
+          <div className="relative text-center pt-2 w-full px-3">
             <h2 className="text-xl font-bold tracking-wider uppercase ">
               {pack.name}
             </h2>
