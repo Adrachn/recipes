@@ -5,7 +5,7 @@ export default async function Home() {
   const recipePacks = await getAllRecipePacks();
 
   return (
-    <main className="container mx-auto p-8 space-y-16">
+    <main className="w-full p-8 space-y-16">
       {recipePacks.map((pack) => (
         <div key={pack._id} className="mb-12">
           <h2 className="text-3xl font-bold mb-6 text-center">{pack.name}</h2>

@@ -45,18 +45,18 @@ const RecipeCard: React.FC<RecipeCardProps> = ({ recipe }) => {
     >
       {/* Metallic Border */}
       <div
-        className={`w-full h-full rounded-xl p-6 bg-gradient-to-br shadow-xl ${getDifficultyGradient(
+        className={`w-full h-full rounded-xl p-3 bg-gradient-to-br shadow-xl ${getDifficultyGradient(
           recipe.difficulty
         )}`}
       >
         {/* Inner Card */}
         <div
-          className={`w-full h-full rounded-md p-2.5 flex flex-col gap-2.5 ${getCardCategoryStyle(
+          className={`w-full h-full rounded-md p-4 flex flex-col gap-3 ${getCardCategoryStyle(
             recipe.categories
           )}`}
         >
           {/* Image */}
-          <figure className="relative w-full h-48 overflow-hidden rounded-t-md">
+          <figure className="relative w-full h-48 overflow-hidden rounded-sm">
             <Image
               src={imageUrl}
               alt={recipe.name}
@@ -66,7 +66,7 @@ const RecipeCard: React.FC<RecipeCardProps> = ({ recipe }) => {
             />
           </figure>
           {/* Text Area */}
-          <figcaption className="p-4 flex flex-col justify-between flex-grow bg-[#FDFBF4] rounded-b-md">
+          <figcaption className="p-4 flex flex-col justify-between flex-grow bg-[#FDFBF4] rounded-sm">
             <div>
               <h3 className="text-xl font-bold text-slate-800">
                 {recipe.name}

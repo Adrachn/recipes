@@ -514,7 +514,7 @@ const MealPlannerForm: React.FC<MealPlannerFormProps> = ({ packs }) => {
           </button>
         </div>
       </form>
-      <div className="mt-12 max-w-4xl mx-auto">
+      <div className="mt-12 w-full px-8">
         {error && (
           <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-md mb-8 max-w-2xl mx-auto text-center">
             <strong className="font-bold">Oops! </strong>

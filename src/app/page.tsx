@@ -5,7 +5,7 @@ export default async function Home() {
   const recipePacks = await getAllRecipePacks();
 
   return (
-    <main className="container mx-auto p-8">
+    <main className="w-full p-8">
       <header className="text-center mb-12">
         <h1 className="text-5xl font-extrabold mb-2 tracking-tight">
           Your Recipe Decks
@@ -14,7 +14,7 @@ export default async function Home() {
           Select a deck to view the recipes inside.
         </p>
       </header>
-      <section className="flex flex-wrap gap-8 ">
+      <section className="flex flex-wrap gap-8 justify-center">
         {recipePacks.map((pack) => (
           <RecipePack key={pack._id} pack={pack} />
         ))}

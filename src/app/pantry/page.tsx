@@ -50,6 +50,8 @@ const ShoppingListComponent = ({
   onRemoveItem,
   onAddItem,
   onEditItem,
+  title,
+  onSetTitle,
 }: {
   shoppingList: ShoppingList | null;
   pantryItems: PantryItem[];
@@ -59,6 +61,8 @@ const ShoppingListComponent = ({
   onRemoveItem: (itemName: string) => void;
   onAddItem: (name: string, quantity: string) => void;
   onEditItem: (oldName: string, newName: string, newQuantity: string) => void;
+  title: string;
+  onSetTitle: (newTitle: string) => void;
 }) => {
   const [newItemName, setNewItemName] = useState("");
   const [newItemValue, setNewItemValue] = useState("");
@@ -68,6 +72,12 @@ const ShoppingListComponent = ({
   const [editingItemValue, setEditingItemValue] = useState("");
   const [editingItemUnit, setEditingItemUnit] = useState("pcs");
   const [copySuccess, setCopySuccess] = useState(false);
+  const [isEditingTitle, setIsEditingTitle] = useState(false);
+  const [editingTitle, setEditingTitle] = useState(title);
+
+  useEffect(() => {
+    setEditingTitle(title);
+  }, [title]);
 
   const handleAddItem = (e: React.FormEvent) => {
     e.preventDefault();
@@ -105,6 +115,15 @@ const ShoppingListComponent = ({
     const newQuantity = `${editingItemValue} ${editingItemUnit}`;
     onEditItem(oldName, editingItemNewName, newQuantity);
     handleCancel();
+  };
+
+  const handleTitleSave = () => {
+    if (editingTitle.trim()) {
+      onSetTitle(editingTitle.trim());
+    } else {
+      setEditingTitle(title); // Revert if empty
+    }
+    setIsEditingTitle(false);
   };
 
   const handleCopy = (list: [string, string][]) => {
@@ -215,57 +234,71 @@ const ShoppingListComponent = ({
   }
 
   return (
-    <div className="bg-white p-6 rounded-lg shadow-md h-full printable">
-      <h2 className="text-2xl font-bold text-slate-800 mb-4">Shopping List</h2>
+    <div className="bg-[#fdf9e4] border border-amber-300 p-6 rounded-lg shadow-xl h-full printable">
+      <div className="flex justify-between items-center mb-4">
+        {isEditingTitle ? (
+          <input
+            type="text"
+            value={editingTitle}
+            onChange={(e) => setEditingTitle(e.target.value)}
+            onBlur={handleTitleSave}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") handleTitleSave();
+              if (e.key === "Escape") setIsEditingTitle(false);
+            }}
+            className="text-2xl font-bold text-slate-800 bg-transparent border-b-2 border-slate-400 focus:outline-none focus:border-slate-800 flex-grow"
+            autoFocus
+          />
+        ) : (
+          <h2
+            className="text-2xl font-bold text-slate-800 cursor-pointer"
+            onClick={() => setIsEditingTitle(true)}
+          >
+            {title}
+          </h2>
+        )}
+        <div className="flex items-center gap-2 no-print">
+          <button
+            onClick={() => handleCopy(sortedList)}
+            className="btn btn-ghost btn-sm btn-square text-slate-500 hover:text-slate-800"
+            title="Copy list"
+          >
+            {copySuccess ? (
+              <Check className="w-5 h-5 text-green-500" />
+            ) : (
+              <Copy className="w-5 h-5" />
+            )}
+          </button>
+          <button
+            onClick={() => window.print()}
+            className="btn btn-ghost btn-sm btn-square text-slate-500 hover:text-slate-800"
+            title="Print list"
+          >
+            <Printer className="w-5 h-5" />
+          </button>
+          <button
+            onClick={onClear}
+            className="btn btn-ghost btn-sm btn-square text-slate-500 hover:text-red-500"
+            title="Delete list"
+          >
+            <Trash2 className="w-5 h-5" />
+          </button>
+        </div>
+      </div>
 
       <div className="flex justify-between items-center mb-4 border-b border-t border-slate-200 py-2 no-print">
         <div className="form-control">
-          <label className="label cursor-pointer gap-2">
+          <label className="label cursor-pointer gap-3">
             <input
               type="checkbox"
               className="toggle toggle-primary toggle-sm"
               checked={excludePantryItems}
               onChange={onToggleExclude}
             />
-            <span className="label-text text-sm">Exclude pantry items</span>
+            <span className="label-text text-sm ml-2">
+              Exclude pantry items
+            </span>
           </label>
-        </div>
-
-        <div className="flex items-center gap-1">
-          <button
-            onClick={() => handleCopy(sortedList)}
-            className="btn btn-ghost btn-sm"
-            title="Copy to clipboard"
-          >
-            {copySuccess ? (
-              <>
-                <Check className="w-4 h-4 text-green-500 mr-1" />
-                <span>Copied!</span>
-              </>
-            ) : (
-              <>
-                <Copy className="w-4 h-4 mr-1" />
-                <span>Copy</span>
-              </>
-            )}
-          </button>
-          <button
-            onClick={() => window.print()}
-            className="btn btn-ghost btn-sm"
-            title="Print list"
-          >
-            <Printer className="w-4 h-4 mr-1" />
-            <span>Print</span>
-          </button>
-          <div className="border-l border-slate-200 h-6 mx-1"></div>
-          <button
-            onClick={onClear}
-            className="btn btn-ghost btn-sm text-slate-500 hover:text-red-500"
-            title="Clear list"
-          >
-            <Trash2 className="w-4 h-4 mr-1" />
-            <span>Clear</span>
-          </button>
         </div>
       </div>
 
@@ -340,7 +373,7 @@ const ShoppingListComponent = ({
                     className="text-slate-400 hover:text-red-500"
                     title="Remove item"
                   >
-                    <Trash2 className="w-5 h-5" />
+                    <X className="w-5 h-5" />
                   </button>
                 </div>
               </>
@@ -403,6 +436,7 @@ export default function PantryPage() {
   const [editingItemValue, setEditingItemValue] = useState("");
   const [editingItemUnit, setEditingItemUnit] = useState("pcs");
   const [isClearModalOpen, setIsClearModalOpen] = useState(false);
+  const [shoppingListTitle, setShoppingListTitle] = useState("Shopping List");
 
   useEffect(() => {
     try {
@@ -417,6 +451,10 @@ export default function PantryPage() {
       const savedExcludePref = localStorage.getItem("excludePantryItems");
       if (savedExcludePref) {
         setExcludePantryItems(JSON.parse(savedExcludePref));
+      }
+      const savedTitle = localStorage.getItem("shoppingListTitle");
+      if (savedTitle) {
+        setShoppingListTitle(JSON.parse(savedTitle));
       }
     } catch (error) {
       console.error(
@@ -486,6 +524,11 @@ export default function PantryPage() {
     setPantryItems(updatedPantry);
     localStorage.setItem("pantryItems", JSON.stringify(updatedPantry));
     handleCancelEdit();
+  };
+
+  const handleSetShoppingListTitle = (newTitle: string) => {
+    setShoppingListTitle(newTitle);
+    localStorage.setItem("shoppingListTitle", JSON.stringify(newTitle));
   };
 
   const handleToggleExclude = () => {
@@ -559,7 +602,7 @@ export default function PantryPage() {
 
   if (!shoppingList || Object.keys(shoppingList).length === 0) {
     return (
-      <div>
+      <div className="container mx-auto p-8">
         <div className="flex justify-between items-center mb-6">
           <h1 className="text-3xl font-bold text-slate-800">
             Pantry & Groceries
@@ -586,10 +629,12 @@ export default function PantryPage() {
               onRemoveItem={handleRemoveShoppingListItem}
               onAddItem={handleAddShoppingListItem}
               onEditItem={handleEditShoppingListItem}
+              title={shoppingListTitle}
+              onSetTitle={handleSetShoppingListTitle}
             />
           </div>
           <div className="md:col-span-2">
-            <div className="bg-white p-6 rounded-lg shadow-md h-full">
+            <div className="bg-white p-6 rounded-lg shadow-md h-full border border-slate-200">
               <h2 className="text-2xl font-bold text-slate-800 mb-4">
                 My Pantry
               </h2>
@@ -819,7 +864,7 @@ export default function PantryPage() {
   );
 
   return (
-    <div>
+    <div className="container mx-auto p-8">
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-3xl font-bold text-slate-800">
           Pantry & Groceries
@@ -846,10 +891,12 @@ export default function PantryPage() {
             onRemoveItem={handleRemoveShoppingListItem}
             onAddItem={handleAddShoppingListItem}
             onEditItem={handleEditShoppingListItem}
+            title={shoppingListTitle}
+            onSetTitle={handleSetShoppingListTitle}
           />
         </div>
         <div className="md:col-span-2">
-          <div className="bg-white p-6 rounded-lg shadow-md h-full">
+          <div className="bg-white p-6 rounded-lg shadow-md h-full border border-slate-200">
             <h2 className="text-2xl font-bold text-slate-800 mb-4">
               My Pantry
             </h2>

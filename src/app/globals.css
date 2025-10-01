@@ -37,14 +37,18 @@
   --color-base-200: #f3f4f6; /* For elements on top of base-100, like cards */
 
   /* Card Variables */
-  --card-width: 350px;
-  --card-height: 480px;
+  --card-width: 320px;
+  --card-height: 440px;
   --modal-card-width: min(90vw, 600px);
   --modal-card-height: min(90vh, 840px);
 
   /* New variables for the calendar view */
   --calendar-card-width: 150px;
   --calendar-card-height: 210px;
+
+  --screen-md: 737px; /* 2 cards + gap + padding + 1px buffer */
+  --screen-lg: 1089px; /* 3 cards + gaps + padding + 1px buffer */
+  --screen-xl: 1441px; /* 4 cards + gaps + padding + 1px buffer */
 }
 
 @layer utilities {
