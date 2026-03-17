@@ -1,5 +1,10 @@
 import { Recipe } from "@/types";
+import { MEAL_CATEGORIES } from "./recipeTaxonomy";
 import { getAllRecipes } from "./recipes";
+
+export type MealCategoryCountKey =
+  | (typeof MEAL_CATEGORIES)[number]["value"]
+  | "any";
 
 export interface PlannerCriteria {
   packs: string[];
@@ -11,14 +16,7 @@ export interface PlannerCriteria {
     Gold: number;
     any: number;
   };
-  counts: {
-    vegan: number;
-    vegetarian: number;
-    chicken: number;
-    fish: number;
-    "red-meat": number;
-    any: number;
-  };
+  counts: Record<MealCategoryCountKey, number>;
 }
 
 export async function generateMealPlan(
@@ -28,7 +26,10 @@ export async function generateMealPlan(
   // 1. Initial Filtering
   let pool = await getAllRecipes();
   if (criteria.packs.length > 0) {
-    pool = pool.filter((recipe) => criteria.packs.includes(recipe.packSlug));
+    pool = pool.filter(
+      (recipe) =>
+        recipe.packSlug != null && criteria.packs.includes(recipe.packSlug)
+    );
   }
   if (criteria.keywords.length > 0) {
     pool = pool.filter((recipe) =>
@@ -134,8 +135,8 @@ export async function getRecipeCounts(criteria: {
   packs: string[];
   keywords: string[];
 }): Promise<{
-  categories: Record<keyof Omit<PlannerCriteria['counts'], 'any'>, number>;
-  difficulties: Record<'Bronze' | 'Silver' | 'Gold', number>;
+  categories: Record<Exclude<MealCategoryCountKey, "any">, number>;
+  difficulties: Record<"Bronze" | "Silver" | "Gold", number>;
   dietaryTags: Record<string, number>;
   totalAvailable: number;
 }> {
@@ -149,17 +150,20 @@ export async function getRecipeCounts(criteria: {
     );
   }
 
-  // 2. Count recipes
-  const categoryCounts: Record<
-    keyof Omit<PlannerCriteria["counts"], "any">,
-    number
-  > = {
-    vegan: 0,
-    vegetarian: 0,
-    chicken: 0,
-    fish: 0,
-    "red-meat": 0,
-  };
+  // 2. Apply keyword filter (e.g. lactose-free, gluten-free) so counts match what's actually available
+  let finalFilteredRecipes = filteredRecipes;
+  if (criteria.keywords.length > 0) {
+    finalFilteredRecipes = filteredRecipes.filter((recipe) =>
+      criteria.keywords.every((keyword) => recipe.keywords?.includes(keyword))
+    );
+  }
+
+  const totalAvailable = finalFilteredRecipes.length;
+
+  // 3. Count categories and difficulties from the SAME pool (keyword-filtered); categories from taxonomy
+  const categoryCounts = Object.fromEntries(
+    MEAL_CATEGORIES.map((c) => [c.value, 0])
+  ) as Record<Exclude<MealCategoryCountKey, "any">, number>;
   const difficultyCounts: Record<"Bronze" | "Silver" | "Gold", number> = {
     Bronze: 0,
     Silver: 0,
@@ -167,20 +171,25 @@ export async function getRecipeCounts(criteria: {
   };
   const dietaryTagCounts: Record<string, number> = {};
 
-  for (const recipe of filteredRecipes) {
-    // Categories
-    const isVegan = recipe.categories.includes('vegan');
-    const isVegetarian = recipe.categories.includes('vegetarian');
-    if (isVegan) categoryCounts.vegan++;
-    if (isVegetarian || isVegan) categoryCounts.vegetarian++;
-    if (recipe.categories.includes('chicken')) categoryCounts.chicken++;
-    if (recipe.categories.includes('fish')) categoryCounts.fish++;
-    if (recipe.categories.includes('red-meat')) categoryCounts['red-meat']++;
+  for (const recipe of finalFilteredRecipes) {
+    const isVegan = recipe.categories.includes("vegan");
+    const isVegetarian = recipe.categories.includes("vegetarian");
+
+    // Categories (from taxonomy); vegetarian count includes vegan
+    for (const cat of MEAL_CATEGORIES) {
+      if (cat.value === "vegetarian") {
+        if (isVegetarian || isVegan) {
+          categoryCounts[cat.value]++;
+        }
+      } else if (recipe.categories.includes(cat.value)) {
+        categoryCounts[cat.value as Exclude<MealCategoryCountKey, "any">]++;
+      }
+    }
     // Difficulty
     const difficultyMap = {
-      bronze: 'Bronze',
-      silver: 'Silver',
-      gold: 'Gold',
+      bronze: "Bronze",
+      silver: "Silver",
+      gold: "Gold",
     };
     const difficultyKey =
       difficultyMap[recipe.difficulty as keyof typeof difficultyMap];
@@ -200,20 +209,10 @@ export async function getRecipeCounts(criteria: {
 
     // Post-process for vegetarian count in dietaryTags if a recipe is only tagged vegan
     if (isVegan && !isVegetarian) {
-      dietaryTagCounts['vegetarian'] =
-        (dietaryTagCounts['vegetarian'] || 0) + 1;
+      dietaryTagCounts["vegetarian"] =
+        (dietaryTagCounts["vegetarian"] || 0) + 1;
     }
   }
-
-  // After counting, we calculate the total available based on ALL filters
-  let finalFilteredRecipes = filteredRecipes;
-  if (criteria.keywords.length > 0) {
-    finalFilteredRecipes = finalFilteredRecipes.filter((recipe) =>
-      criteria.keywords.every((keyword) => recipe.keywords?.includes(keyword))
-    );
-  }
-
-  const totalAvailable = new Set(finalFilteredRecipes).size;
 
   return {
     categories: categoryCounts,

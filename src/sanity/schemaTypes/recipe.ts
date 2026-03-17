@@ -1,4 +1,9 @@
 import { defineField, defineType } from 'sanity';
+import {
+  MEAL_CATEGORIES,
+  DIFFICULTY_LEVELS,
+  KEYWORD_OPTIONS,
+} from '../../lib/recipeTaxonomy';
 
 export const recipe = defineType({
   name: 'recipe',
@@ -41,11 +46,7 @@ export const recipe = defineType({
       title: 'Difficulty',
       type: 'string',
       options: {
-        list: [
-          { title: 'Bronze', value: 'bronze' },
-          { title: 'Silver', value: 'silver' },
-          { title: 'Gold', value: 'gold' },
-        ],
+        list: DIFFICULTY_LEVELS,
         layout: 'radio',
       },
       validation: (Rule) => Rule.required(),
@@ -64,29 +65,24 @@ export const recipe = defineType({
       name: 'categories',
       title: 'Categories',
       description:
-        'Primary categories for meal planning and filtering (e.g., chicken, vegan). These will appear as icons.',
+        'Primary categories for meal planning and filtering. These will appear as icons.',
       type: 'array',
       of: [{ type: 'string' }],
       options: {
-        list: [
-          { title: 'Vegan', value: 'vegan' },
-          { title: 'Vegetarian', value: 'vegetarian' },
-          { title: 'Chicken', value: 'chicken' },
-          { title: 'Fish', value: 'fish' },
-          { title: 'Red Meat', value: 'red-meat' },
-        ],
+        list: MEAL_CATEGORIES,
         layout: 'grid',
       },
       validation: (Rule) => Rule.required().min(1),
     }),
     defineField({
       name: 'keywords',
-      title: 'Keywords',
+      title: 'Dietary & style tags',
       description:
-        'Descriptive keywords for searching (e.g., curry, indian, soup, gluten-free).',
+        'Used for recipe search and meal planner filters. Pick from the list (same options as in the app).',
       type: 'array',
       of: [{ type: 'string' }],
       options: {
+        list: KEYWORD_OPTIONS,
         layout: 'tags',
       },
     }),

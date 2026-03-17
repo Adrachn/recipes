@@ -1,3 +1,5 @@
+import type { DifficultyValue, MealCategoryValue } from "@/lib/recipeTaxonomy";
+
 export interface Ingredient {
   _key: string;
   name: string;
@@ -16,10 +18,10 @@ export interface Recipe {
     };
   };
   summary: string;
-  difficulty: "bronze" | "silver" | "gold";
+  difficulty: DifficultyValue;
   prepTime?: number;
   cookTime?: number;
-  categories: string[];
+  categories: MealCategoryValue[];
   keywords?: string[];
   servings?: number;
   packSlug?: string;

@@ -5,6 +5,7 @@ import {
   getRecipeCounts,
   PlannerCriteria,
 } from "@/lib/planner";
+import { MEAL_CATEGORIES } from "@/lib/recipeTaxonomy";
 import { getAllRecipes, searchRecipes } from "@/lib/recipes";
 import { Recipe } from "@/types";
 
@@ -62,9 +63,9 @@ export async function rerollRecipeAction(
       recipe.difficulty === difficulty
   );
 
-  // Find the primary meal category tag (e.g., 'vegan', 'chicken') to match
+  const categoryValues = MEAL_CATEGORIES.map((c) => c.value);
   const primaryCategory = tagsToMatch.find((tag) =>
-    ["vegan", "vegetarian", "chicken", "fish", "red-meat"].includes(tag)
+    categoryValues.includes(tag)
   );
 
   // 2a. Prioritize finding a replacement with the same primary category

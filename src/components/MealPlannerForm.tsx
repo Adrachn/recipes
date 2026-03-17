@@ -10,6 +10,13 @@ import {
   searchRecipesAction,
 } from "../app/meal-planner/actions";
 import { PlannerCriteria } from "@/lib/planner";
+import {
+  MEAL_CATEGORIES,
+  DIFFICULTY_LEVELS,
+  DIETARY_OPTIONS,
+  STYLE_OPTIONS,
+  type DifficultyLabel,
+} from "@/lib/recipeTaxonomy";
 import { RefreshCw, Ban, CalendarCheck, Trash2 } from "lucide-react";
 import CategoryCounter from "./CategoryCounter";
 import { useRouter } from "next/navigation";
@@ -29,21 +36,16 @@ interface MealPlannerFormProps {
   packs: RecipePack[];
 }
 
-const mealCategories: (keyof Omit<PlannerCriteria["counts"], "any">)[] = [
-  "vegan",
-  "vegetarian",
-  "chicken",
-  "fish",
-  "red-meat",
-];
+const mealCategories = MEAL_CATEGORIES.map((c) => c.value);
 
-const difficultyCategories: ("Bronze" | "Silver" | "Gold")[] = [
-  "Bronze",
-  "Silver",
-  "Gold",
-];
+const difficultyCategories: DifficultyLabel[] = DIFFICULTY_LEVELS.map(
+  (d) => d.title as DifficultyLabel
+);
 
-const globalFilters = ["lactose-free", "gluten-free"];
+const initialMealTypeCounts = (): PlannerCriteria["counts"] => ({
+  ...Object.fromEntries(MEAL_CATEGORIES.map((c) => [c.value, 0])),
+  any: 0,
+});
 
 const MealPlannerForm: React.FC<MealPlannerFormProps> = ({ packs }) => {
   const [plan, setPlan] = useState<Recipe[] | null>(null);
@@ -64,14 +66,7 @@ const MealPlannerForm: React.FC<MealPlannerFormProps> = ({ packs }) => {
   const [totalMeals, setTotalMeals] = useState(7);
   const [mealTypeCounts, setMealTypeCounts] = useState<
     PlannerCriteria["counts"]
-  >({
-    vegan: 0,
-    vegetarian: 0,
-    chicken: 0,
-    fish: 0,
-    "red-meat": 0,
-    any: 0, // This will be calculated on submit
-  });
+  >(initialMealTypeCounts);
   const [difficultyCounts, setDifficultyCounts] = useState<
     PlannerCriteria["difficulty"]
   >({
@@ -82,19 +77,24 @@ const MealPlannerForm: React.FC<MealPlannerFormProps> = ({ packs }) => {
   });
 
   const [selectedPacks, setSelectedPacks] = useState<string[]>([]);
-  const [selectedGlobalFilters, setSelectedGlobalFilters] = useState<string[]>(
+  const [selectedDietary, setSelectedDietary] = useState<string[]>([]);
+  const [selectedStyleKeywords, setSelectedStyleKeywords] = useState<string[]>(
     []
   );
   const [availableCounts, setAvailableCounts] =
     useState<AvailableCounts | null>(null);
 
+  const allKeywordFilters = useMemo(
+    () => [...selectedDietary, ...selectedStyleKeywords],
+    [selectedDietary, selectedStyleKeywords]
+  );
+
   // Effect to fetch available recipe counts when filters change
   useEffect(() => {
     const handler = setTimeout(async () => {
-      // No need to fetch if no packs are selected, as the pool is "all"
       const counts = await getCountsAction({
         packs: selectedPacks,
-        keywords: selectedGlobalFilters,
+        keywords: allKeywordFilters,
       });
       setAvailableCounts(counts);
     }, 300); // Debounce to avoid excessive fetching
@@ -102,7 +102,22 @@ const MealPlannerForm: React.FC<MealPlannerFormProps> = ({ packs }) => {
     return () => {
       clearTimeout(handler);
     };
-  }, [selectedPacks, selectedGlobalFilters]);
+  }, [selectedPacks, allKeywordFilters]);
+
+  // When filters or total meals change, reset meal-type and difficulty allocations
+  // so we don't show "5 recipes, Vegan (3)" but only 0–1 selectable (leftover allocation from previous pool)
+  useEffect(() => {
+    setMealTypeCounts(initialMealTypeCounts());
+    setDifficultyCounts({ Bronze: 0, Silver: 0, Gold: 0, any: 0 });
+  }, [selectedPacks, allKeywordFilters, totalMeals]);
+
+  // When available counts drop (e.g. after applying Lactose Free), clamp totalMeals
+  // so the "How many meals?" selection stays valid and visibly selected
+  useEffect(() => {
+    if (availableCounts && totalMeals > availableCounts.totalAvailable) {
+      setTotalMeals(Math.max(1, availableCounts.totalAvailable));
+    }
+  }, [availableCounts?.totalAvailable]);
 
   // Effect to handle recipe search with debouncing
   useEffect(() => {
@@ -139,21 +154,14 @@ const MealPlannerForm: React.FC<MealPlannerFormProps> = ({ packs }) => {
   };
 
   const handleDifficultyCountChange = (
-    difficulty: "Bronze" | "Silver" | "Gold",
+    difficulty: DifficultyLabel,
     value: number
   ) => {
     setDifficultyCounts((prev) => ({ ...prev, [difficulty]: value }));
   };
 
   const handleClearAllMealTypeCounts = () => {
-    setMealTypeCounts({
-      vegan: 0,
-      vegetarian: 0,
-      chicken: 0,
-      fish: 0,
-      "red-meat": 0,
-      any: 0,
-    });
+    setMealTypeCounts(initialMealTypeCounts());
   };
 
   const handleClearAllDifficultyCounts = () => {
@@ -214,7 +222,7 @@ const MealPlannerForm: React.FC<MealPlannerFormProps> = ({ packs }) => {
 
     const criteria: PlannerCriteria = {
       packs: packs as string[],
-      keywords: selectedGlobalFilters,
+      keywords: allKeywordFilters,
       diets: [], // Deprecated
       difficulty: finalDifficultyCounts,
       counts: finalCategoryCounts,
@@ -263,7 +271,7 @@ const MealPlannerForm: React.FC<MealPlannerFormProps> = ({ packs }) => {
       currentPlanSlugs,
       recipeToReplace.slug.current,
       recipeToReplace.categories,
-      recipeToReplace.difficulty
+      recipeToReplace.difficulty as "bronze" | "silver" | "gold"
     );
 
     if (result.newRecipe) {
@@ -322,11 +330,11 @@ const MealPlannerForm: React.FC<MealPlannerFormProps> = ({ packs }) => {
           const diff =
             recipe.difficulty.charAt(0).toUpperCase() +
             recipe.difficulty.slice(1);
-          acc[diff as "Bronze" | "Silver" | "Gold"] =
-            (acc[diff as "Bronze" | "Silver" | "Gold"] || 0) + 1;
+          acc[diff as DifficultyLabel] =
+            (acc[diff as DifficultyLabel] || 0) + 1;
           return acc;
         },
-        {} as Record<"Bronze" | "Silver" | "Gold", number>
+        {} as Record<DifficultyLabel, number>
       )
     : { Bronze: 0, Silver: 0, Gold: 0 };
 
@@ -373,36 +381,77 @@ const MealPlannerForm: React.FC<MealPlannerFormProps> = ({ packs }) => {
 
         <fieldset className="mb-8">
           <legend className="text-xl font-semibold mb-4 text-gray-800">
-            2. Global Filters (Optional)
+            2. Filters (optional)
           </legend>
-          <div className="grid grid-cols-2 gap-4">
-            {globalFilters.map((filter) => (
-              <div key={filter} className="flex items-center">
+          <h4 className="text-sm font-medium text-gray-600 mb-2">
+            Dietary requirements
+          </h4>
+          <p className="text-xs text-gray-500 mb-3">
+            Only show recipes that match all selected requirements.
+          </p>
+          <div className="grid grid-cols-2 gap-4 mb-6">
+            {DIETARY_OPTIONS.map(({ value, label }) => (
+              <div key={`dietary-${value}`} className="flex items-center">
                 <input
                   type="checkbox"
-                  id={`filter-${filter}`}
-                  name="globalFilters"
-                  value={filter}
-                  checked={selectedGlobalFilters.includes(filter)}
+                  id={`dietary-${value}`}
+                  name="dietary"
+                  value={value}
+                  checked={selectedDietary.includes(value)}
                   onChange={(e) => {
                     if (e.target.checked) {
-                      setSelectedGlobalFilters([
-                        ...selectedGlobalFilters,
-                        filter,
-                      ]);
+                      setSelectedDietary([...selectedDietary, value]);
                     } else {
-                      setSelectedGlobalFilters(
-                        selectedGlobalFilters.filter((f) => f !== filter)
+                      setSelectedDietary(
+                        selectedDietary.filter((f) => f !== value)
                       );
                     }
                   }}
                   className="h-4 w-4 rounded border-gray-300 text-primary focus:ring-primary"
                 />
                 <label
-                  htmlFor={`filter-${filter}`}
-                  className="ml-3 flex items-center text-sm font-medium text-gray-700 capitalize"
+                  htmlFor={`dietary-${value}`}
+                  className="ml-3 flex items-center text-sm font-medium text-gray-700"
                 >
-                  <span>{filter.replace("-", " ")}</span>
+                  {label}
+                </label>
+              </div>
+            ))}
+          </div>
+          <h4 className="text-sm font-medium text-gray-600 mb-2">
+            Style or cuisine
+          </h4>
+          <p className="text-xs text-gray-500 mb-3">
+            Only show recipes that have all selected tags (e.g. quick, curry).
+          </p>
+          <div className="flex flex-wrap gap-3">
+            {STYLE_OPTIONS.map(({ value, label }) => (
+              <div key={`style-${value}`} className="flex items-center">
+                <input
+                  type="checkbox"
+                  id={`style-${value}`}
+                  name="styleKeywords"
+                  value={value}
+                  checked={selectedStyleKeywords.includes(value)}
+                  onChange={(e) => {
+                    if (e.target.checked) {
+                      setSelectedStyleKeywords([
+                        ...selectedStyleKeywords,
+                        value,
+                      ]);
+                    } else {
+                      setSelectedStyleKeywords(
+                        selectedStyleKeywords.filter((k) => k !== value)
+                      );
+                    }
+                  }}
+                  className="h-4 w-4 rounded border-gray-300 text-primary focus:ring-primary"
+                />
+                <label
+                  htmlFor={`style-${value}`}
+                  className="ml-2 text-sm font-medium text-gray-700"
+                >
+                  {label}
                 </label>
               </div>
             ))}
@@ -533,10 +582,10 @@ const MealPlannerForm: React.FC<MealPlannerFormProps> = ({ packs }) => {
 
                   const canReroll =
                     (availableCounts?.difficulties[
-                      recipeDifficulty as "Bronze" | "Silver" | "Gold"
+                      recipeDifficulty as DifficultyLabel
                     ] ?? 0) >
                     countsInPlanByDifficulty[
-                      recipeDifficulty as "Bronze" | "Silver" | "Gold"
+                      recipeDifficulty as DifficultyLabel
                     ];
 
                   return (

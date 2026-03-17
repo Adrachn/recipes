@@ -1,4 +1,3 @@
-import Image from "next/image";
 import { Timer, Cookie } from "lucide-react";
 
 // This is a static component for visual representation on the pack.

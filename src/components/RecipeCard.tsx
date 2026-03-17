@@ -27,7 +27,7 @@ const getDifficultyGradient = (difficulty: "bronze" | "silver" | "gold") => {
   return gradients[difficulty] || "";
 };
 
-const RecipeCard: React.FC<RecipeCardProps> = ({ recipe }) => {
+export function RecipeCard({ recipe }: RecipeCardProps) {
   const prep = recipe.prepTime || 0;
   const cook = recipe.cookTime || 0;
   const totalTime = prep + cook;
