@@ -39,7 +39,7 @@ interface MealPlannerFormProps {
 const mealCategories = MEAL_CATEGORIES.map((c) => c.value);
 
 const difficultyCategories: DifficultyLabel[] = DIFFICULTY_LEVELS.map(
-  (d) => d.title as DifficultyLabel
+  (d) => d.title as DifficultyLabel,
 );
 
 const initialMealTypeCounts = (): PlannerCriteria["counts"] => ({
@@ -61,7 +61,7 @@ const MealPlannerForm: React.FC<MealPlannerFormProps> = ({ packs }) => {
   const [searchError, setSearchError] = useState<string | null>(null);
 
   const [lastCriteria, setLastCriteria] = useState<PlannerCriteria | null>(
-    null
+    null,
   );
   const [totalMeals, setTotalMeals] = useState(7);
   const [mealTypeCounts, setMealTypeCounts] = useState<
@@ -79,14 +79,14 @@ const MealPlannerForm: React.FC<MealPlannerFormProps> = ({ packs }) => {
   const [selectedPacks, setSelectedPacks] = useState<string[]>([]);
   const [selectedDietary, setSelectedDietary] = useState<string[]>([]);
   const [selectedStyleKeywords, setSelectedStyleKeywords] = useState<string[]>(
-    []
+    [],
   );
   const [availableCounts, setAvailableCounts] =
     useState<AvailableCounts | null>(null);
 
   const allKeywordFilters = useMemo(
     () => [...selectedDietary, ...selectedStyleKeywords],
-    [selectedDietary, selectedStyleKeywords]
+    [selectedDietary, selectedStyleKeywords],
   );
 
   // Effect to fetch available recipe counts when filters change
@@ -148,14 +148,14 @@ const MealPlannerForm: React.FC<MealPlannerFormProps> = ({ packs }) => {
 
   const handleMealTypeCountChange = (
     category: keyof PlannerCriteria["counts"],
-    value: number
+    value: number,
   ) => {
     setMealTypeCounts((prev) => ({ ...prev, [category]: value }));
   };
 
   const handleDifficultyCountChange = (
     difficulty: DifficultyLabel,
-    value: number
+    value: number,
   ) => {
     setDifficultyCounts((prev) => ({ ...prev, [difficulty]: value }));
   };
@@ -199,7 +199,7 @@ const MealPlannerForm: React.FC<MealPlannerFormProps> = ({ packs }) => {
       totalMeals -
         Object.values(mealTypeCounts)
           .filter((_, i) => Object.keys(mealTypeCounts)[i] !== "any") // Exclude 'any' from sum
-          .reduce((a, b) => a + b, 0)
+          .reduce((a, b) => a + b, 0),
     );
 
     const finalCategoryCounts = {
@@ -212,7 +212,7 @@ const MealPlannerForm: React.FC<MealPlannerFormProps> = ({ packs }) => {
       totalMeals -
         Object.values(difficultyCounts)
           .filter((_, i) => Object.keys(difficultyCounts)[i] !== "any")
-          .reduce((a, b) => a + b, 0)
+          .reduce((a, b) => a + b, 0),
     );
 
     const finalDifficultyCounts = {
@@ -271,12 +271,12 @@ const MealPlannerForm: React.FC<MealPlannerFormProps> = ({ packs }) => {
       currentPlanSlugs,
       recipeToReplace.slug.current,
       recipeToReplace.categories,
-      recipeToReplace.difficulty as "bronze" | "silver" | "gold"
+      recipeToReplace.difficulty as "bronze" | "silver" | "gold",
     );
 
     if (result.newRecipe) {
       const newPlan = plan.map((recipe) =>
-        recipe._id === recipeToReplace._id ? result.newRecipe! : recipe
+        recipe._id === recipeToReplace._id ? result.newRecipe! : recipe,
       );
       setPlan(newPlan);
     } else {
@@ -334,7 +334,7 @@ const MealPlannerForm: React.FC<MealPlannerFormProps> = ({ packs }) => {
             (acc[diff as DifficultyLabel] || 0) + 1;
           return acc;
         },
-        {} as Record<DifficultyLabel, number>
+        {} as Record<DifficultyLabel, number>,
       )
     : { Bronze: 0, Silver: 0, Gold: 0 };
 
@@ -344,11 +344,11 @@ const MealPlannerForm: React.FC<MealPlannerFormProps> = ({ packs }) => {
         onSubmit={handleSubmit}
         className="bg-slate-50 p-8 rounded-xl shadow-lg border border-slate-200 max-w-2xl mx-auto"
       >
-        <fieldset className="mb-8">
+        <fieldset className="mb-12">
           <legend className="text-xl font-semibold mb-4 text-gray-800">
-            1. Select Recipe Packs
+            1. Recipe Pack
           </legend>
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-4 gap-4">
             {packs.map((pack) => (
               <div key={pack._id} className="flex items-center">
                 <input
@@ -362,7 +362,7 @@ const MealPlannerForm: React.FC<MealPlannerFormProps> = ({ packs }) => {
                       setSelectedPacks([...selectedPacks, pack.slug.current]);
                     } else {
                       setSelectedPacks(
-                        selectedPacks.filter((p) => p !== pack.slug.current)
+                        selectedPacks.filter((p) => p !== pack.slug.current),
                       );
                     }
                   }}
@@ -379,17 +379,11 @@ const MealPlannerForm: React.FC<MealPlannerFormProps> = ({ packs }) => {
           </div>
         </fieldset>
 
-        <fieldset className="mb-8">
+        <fieldset className="mb-12">
           <legend className="text-xl font-semibold mb-4 text-gray-800">
-            2. Filters (optional)
+            2. Dietary requirements
           </legend>
-          <h4 className="text-sm font-medium text-gray-600 mb-2">
-            Dietary requirements
-          </h4>
-          <p className="text-xs text-gray-500 mb-3">
-            Only show recipes that match all selected requirements.
-          </p>
-          <div className="grid grid-cols-2 gap-4 mb-6">
+          <div className="grid grid-cols-4 gap-4">
             {DIETARY_OPTIONS.map(({ value, label }) => (
               <div key={`dietary-${value}`} className="flex items-center">
                 <input
@@ -403,7 +397,7 @@ const MealPlannerForm: React.FC<MealPlannerFormProps> = ({ packs }) => {
                       setSelectedDietary([...selectedDietary, value]);
                     } else {
                       setSelectedDietary(
-                        selectedDietary.filter((f) => f !== value)
+                        selectedDietary.filter((f) => f !== value),
                       );
                     }
                   }}
@@ -418,13 +412,13 @@ const MealPlannerForm: React.FC<MealPlannerFormProps> = ({ packs }) => {
               </div>
             ))}
           </div>
-          <h4 className="text-sm font-medium text-gray-600 mb-2">
-            Style or cuisine
-          </h4>
-          <p className="text-xs text-gray-500 mb-3">
-            Only show recipes that have all selected tags (e.g. quick, curry).
-          </p>
-          <div className="flex flex-wrap gap-3">
+        </fieldset>
+
+        <fieldset className="mb-12">
+          <legend className="text-xl font-semibold mb-4 text-gray-800">
+            3. Type
+          </legend>
+          <div className="grid grid-cols-4 gap-4">
             {STYLE_OPTIONS.map(({ value, label }) => (
               <div key={`style-${value}`} className="flex items-center">
                 <input
@@ -441,7 +435,7 @@ const MealPlannerForm: React.FC<MealPlannerFormProps> = ({ packs }) => {
                       ]);
                     } else {
                       setSelectedStyleKeywords(
-                        selectedStyleKeywords.filter((k) => k !== value)
+                        selectedStyleKeywords.filter((k) => k !== value),
                       );
                     }
                   }}
@@ -458,12 +452,11 @@ const MealPlannerForm: React.FC<MealPlannerFormProps> = ({ packs }) => {
           </div>
         </fieldset>
 
-        <fieldset className="mb-8">
+        <fieldset className="mb-12">
           <legend className="text-xl font-semibold mb-4 text-gray-800">
-            3. Define Your Meal Plan
+            4. How many dishes?
           </legend>
-          <h4 className="font-semibold text-gray-700 mb-2">How many meals?</h4>
-          <div className="flex justify-center space-x-2 mb-6">
+          <div className="flex  space-x-2 mb-6">
             {Array.from({ length: 7 }, (_, i) => i + 1).map((num) => (
               <button
                 key={num}
@@ -483,7 +476,7 @@ const MealPlannerForm: React.FC<MealPlannerFormProps> = ({ packs }) => {
             ))}
           </div>
           {availableCounts && (
-            <p className="text-center text-sm text-slate-500 -mt-2 mb-6">
+            <p className=" text-sm text-slate-500 -mt-2 mb-8">
               {availableCounts.totalAvailable} recipes match your filters.
             </p>
           )}
@@ -510,7 +503,7 @@ const MealPlannerForm: React.FC<MealPlannerFormProps> = ({ packs }) => {
                   currentValue={mealTypeCounts[category]}
                   maxValue={Math.min(
                     availableCounts?.categories[category] ?? totalMeals,
-                    mealTypeCounts[category] + remainingMeals
+                    mealTypeCounts[category] + remainingMeals,
                   )}
                   onChange={(value) =>
                     handleMealTypeCountChange(category, value)
@@ -542,7 +535,7 @@ const MealPlannerForm: React.FC<MealPlannerFormProps> = ({ packs }) => {
                   currentValue={difficultyCounts[difficulty]}
                   maxValue={Math.min(
                     availableCounts?.difficulties[difficulty] ?? totalMeals,
-                    difficultyCounts[difficulty] + remainingMealsForDifficulty
+                    difficultyCounts[difficulty] + remainingMealsForDifficulty,
                   )}
                   onChange={(value) =>
                     handleDifficultyCountChange(difficulty, value)
